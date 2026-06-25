@@ -11,7 +11,14 @@
   "answers": [
    "D"
   ],
-  "explain": "「比較兩 prompt 公平性/偏差 + 最少自訂開發」→ Bedrock model evaluation job(內建評估)+ 依 demographic group 維度設 CloudWatch alarm。SageMaker Clarify(C)是 SageMaker ML 模型工具且需較多整合;自建 Lambda 後處理(A)開發量大。"
+  "explain": "「比較兩 prompt 公平性/偏差 + 最少自訂開發」→ Bedrock model evaluation job(內建評估)+ 依 demographic group 維度設 CloudWatch alarm。SageMaker Clarify(C)是 SageMaker ML 模型工具且需較多整合;自建 Lambda 後處理(A)開發量大。",
+  "stem_zh": "一家零售公司有一個使用 Amazon Bedrock 的生成式 AI (GenAI) 產品推薦應用程式。該應用程式會根據瀏覽記錄與人口統計資料向客戶推薦產品。公司需要在多個人口統計群組之間實作公平性評估，以偵測並衡量兩種 prompt 方法之間在推薦上的偏差。公司希望即時收集並監控公平性 metrics。當公平性 metrics 在不同人口統計群組之間顯示出超過 15% 的差異時，公司必須收到警示。公司必須收到每週報告，比較兩種 prompt 方法的表現。哪一個解決方案能以最少的自訂開發工作量滿足這些需求？",
+  "options_zh": {
+   "A": "設定一個 Amazon CloudWatch dashboard 來顯示來自 Amazon Bedrock API 呼叫的預設 metrics。根據模型輸出建立自訂 metrics。設定 Amazon EventBridge 規則來叫用 AWS Lambda functions，對模型回應執行後處理分析並發佈自訂的公平性 metrics。",
+   "B": "在 Amazon Bedrock Prompt Management 中建立這兩個 prompt 變體。使用 Amazon Bedrock Flows 以已定義的流量分配來部署這些 prompt 變體。設定具有內容過濾器的 Amazon Bedrock guardrails 來監控人口統計公平性。在 GuardrailContentSource 維度上設定使用 InvocationsIntervened metrics 的 Amazon CloudWatch alarms，以偵測推薦差異門檻的違規情形。",
+   "C": "設定 Amazon SageMaker Clarify 來分析模型輸出。將公平性 metrics 發佈到 Amazon CloudWatch。建立 CloudWatch 複合 alarms，將 SageMaker Clarify 偏差 metrics 與 Amazon Bedrock 延遲 metrics 結合，以提供全面的公平性評估 dashboard。",
+   "D": "建立一個 Amazon Bedrock 模型評估工作，以比較兩個 prompt 變體之間的公平性。在 Amazon CloudWatch 中啟用模型叫用記錄。針對 InvocationsIntervened metrics 設定 CloudWatch alarms，並為每個人口統計群組設定一個維度。"
+  }
  },
  {
   "num": 2,
@@ -29,7 +36,16 @@
    "D",
    "F"
   ],
-  "explain": "高風險主題→denied topics(A);競爭對手名稱(特定詞)→custom word filters 設 block(D);事實接地強→高 grounding 門檻(F,門檻越高越嚴格)。content filter 是有害類別,不適合「特定主題/競爭對手名稱」。"
+  "explain": "高風險主題→denied topics(A);競爭對手名稱(特定詞)→custom word filters 設 block(D);事實接地強→高 grounding 門檻(F,門檻越高越嚴格)。content filter 是有害類別,不適合「特定主題/競爭對手名稱」。",
+  "stem_zh": "一家金融公司正在開發一個 AI 助理，以協助客戶規劃投資並管理其投資組合。公司辨識出數種高風險的對話模式，例如要求提供特定股票推薦或保證報酬。如果公司無法實作適當的控管，這些高風險對話模式可能導致違反法規。公司必須確保 AI 助理不會提供不當的財務建議、不會產生關於競爭對手的內容，也不會做出無法以公司核可的財務指引為事實依據的聲稱。公司希望使用 Amazon Bedrock Guardrails 來實作解決方案。哪一組步驟能滿足這些需求？（選擇三項。）",
+  "options_zh": {
+   "A": "將這些高風險對話模式加入到 denied topics guardrail 中。",
+   "B": "設定 content filter guardrail，以過濾包含高風險對話模式的 prompts。",
+   "C": "設定 content filter guardrail，以過濾包含競爭對手名稱的 prompts。",
+   "D": "將競爭對手的名稱加入為自訂字詞過濾器。將輸入與輸出動作設定為封鎖。",
+   "E": "設定較低的 grounding score 門檻。",
+   "F": "設定較高的 grounding score 門檻。"
+  }
  },
  {
   "num": 3,
@@ -43,7 +59,14 @@
   "answers": [
    "D"
   ],
-  "explain": "複雜問題逾時/慢→改串流:InvokeModelWithResponseStream + WebSocket API,降低感知延遲。加大逾時/重試(B)不解決根本;SQS 輪詢(C)非即時串流。"
+  "explain": "複雜問題逾時/慢→改串流:InvokeModelWithResponseStream + WebSocket API,降低感知延遲。加大逾時/重試(B)不解決根本;SQS 輪詢(C)非即時串流。",
+  "stem_zh": "一家公司部署了一個 AI 助理，作為使用 AWS Amplify、AWS AppSync GraphQL API 與 Amazon Bedrock Knowledge Bases 的 React 應用程式。該應用程式使用 GraphQL API 來呼叫 Amazon Bedrock 的 RetrieveAndGenerate API，以進行 knowledge base 互動。公司設定了一個 AWS Lambda resolver，使用 RequestResponse 叫用類型。應用程式使用者回報頻繁的逾時與緩慢的回應時間。使用者回報這些問題在需要較長處理時間的複雜問題上更為頻繁。公司需要一個解決方案來修正這些效能問題並提升使用者體驗。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "使用 AWS Amplify AI Kit 來實作來自 GraphQL API 的串流回應，並最佳化用戶端的渲染。",
+   "B": "增加 Lambda resolver 的逾時值。實作具有指數退避（exponential backoff）的重試邏輯。",
+   "C": "更新應用程式，將 API 請求傳送到 Amazon SQS 佇列。更新 AWS AppSync resolver 以輪詢並處理該佇列。",
+   "D": "將 RetrieveAndGenerate API 改為 InvokeModelWithResponseStream API。更新應用程式以使用 Amazon API Gateway WebSocket API 來支援串流回應。"
+  }
  },
  {
   "num": 4,
@@ -57,7 +80,14 @@
   "answers": [
    "C"
   ],
-  "explain": "不重部署即時切換 + 複雜業務邏輯 + 即時傳播 → Lambda 讀 AWS AppConfig Agent 動態配置 + 在 Lambda 跑業務邏輯選 FM。環境變數/stage variables(A、B)需重設;Lambda authorizer(D)是認證用途,不適合複雜路由。"
+  "explain": "不重部署即時切換 + 複雜業務邏輯 + 即時傳播 → Lambda 讀 AWS AppConfig Agent 動態配置 + 在 Lambda 跑業務邏輯選 FM。環境變數/stage variables(A、B)需重設;Lambda authorizer(D)是認證用途,不適合複雜路由。",
+  "stem_zh": "一家電子商務公司營運一套全球產品推薦系統，需要根據法規、成本最佳化與效能需求，在 Amazon Bedrock 中的多個 foundation model (FM) 之間切換。公司必須根據專有的商業邏輯套用自訂控管，包括動態成本門檻、特定 AWS Region 的合規規則，以及跨多個 FM 的即時 A/B 測試。系統必須能夠在不部署新程式碼的情況下於各 FM 之間切換。系統必須根據複雜的規則來路由使用者請求，這些規則包括使用者層級、交易金額、法規區域，以及每小時變動且需要在數千個並行請求間立即傳播的即時成本 metrics。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "部署一個 AWS Lambda function，使用環境變數來儲存路由規則與 Amazon Bedrock FM ID。當商業需求變更時，使用 Lambda 主控台來更新環境變數。設定一個 Amazon API Gateway REST API 來讀取請求參數以做出路由決策。",
+   "B": "部署 Amazon API Gateway REST API 請求轉換範本，以根據請求屬性實作路由邏輯。將 Amazon Bedrock FM endpoints 儲存為 REST API 的 stage variables。當系統在模型之間切換時更新這些變數。",
+   "C": "設定一個 AWS Lambda function，針對每個使用者請求從 AWS AppConfig Agent 擷取路由設定。在 Lambda function 中執行商業邏輯，為每個請求選擇適當的 FM。透過單一 Amazon API Gateway REST API endpoint 公開該 FM。",
+   "D": "為 Amazon API Gateway REST API 使用 AWS Lambda authorizers，以評估儲存在 AWS AppConfig 中的路由規則。根據商業邏輯回傳授權內容（authorization contexts）。將請求路由到對應每個 Amazon Bedrock FM 的特定模型 Lambda functions。"
+  }
  },
  {
   "num": 5,
@@ -71,7 +101,14 @@
   "answers": [
    "A"
   ],
-  "explain": "集中管理 prompt 變體 + 最少維護 → Bedrock Prompt Management(可重用模板/變體)+ Guardrails(類別過濾 + 敏感詞清單)。自建 DynamoDB+Lambda+Comprehend 後處理(C、D)維護負擔高。"
+  "explain": "集中管理 prompt 變體 + 最少維護 → Bedrock Prompt Management(可重用模板/變體)+ Guardrails(類別過濾 + 敏感詞清單)。自建 DynamoDB+Lambda+Comprehend 後處理(C、D)維護負擔高。",
+  "stem_zh": "一家公司正在開發一個內部生成式 AI (GenAI) 助理，使用 Amazon Bedrock 為多個業務單位摘要公司文件。該 GenAI 助理必須以一致的格式產生回應，包括文件摘要、業務風險分類，以及標記供審查的條款。該 GenAI 助理必須為每個使用者所屬的業務單位（例如法務、人力資源或財務）調整回應的語氣。該 GenAI 助理必須封鎖仇恨言論、不當主題，以及如個人健康資訊等敏感資訊。公司需要一個解決方案，能集中管理跨業務單位與團隊的 prompt 變體。公司希望盡量減少後處理邏輯持續的協調作業與維護工作。公司也希望能夠隨時間調整該 GenAI 助理的內容審核標準。哪一個解決方案能以最少的維護負擔滿足這些需求？",
+  "options_zh": {
+   "A": "使用 Amazon Bedrock Prompt Management 來設定可重複使用的範本與特定業務單位的 prompt 變體。套用具有類別過濾器與敏感字詞清單的 Amazon Bedrock guardrails 來封鎖被禁止的內容。",
+   "B": "使用 Amazon Bedrock Prompt Management 來定義基礎範本。透過 system prompt 變數來強制執行特定業務單位的語氣。設定 Amazon Bedrock guardrails 以套用基於受眾的門檻調整。透過內部管理 API 來管理這些 guardrails。",
+   "C": "使用 Amazon Bedrock，並在 API 呼叫中注入基於業務單位的指示。將回應格式規則儲存在 Amazon DynamoDB 中。使用 AWS Step Functions 來驗證回應。在該 GenAI 助理產生回應後，使用 Amazon Comprehend 來套用內容過濾器。",
+   "D": "使用 Amazon Bedrock，並搭配儲存在 Amazon DynamoDB 中的自訂 prompt 範本。建立一個 AWS Lambda function 來選擇特定業務單位的 prompts。建立第二個 Lambda function 來呼叫 Amazon Comprehend，以從回應中過濾被禁止的內容。"
+  }
  },
  {
   "num": 6,
@@ -85,7 +122,14 @@
   "answers": [
    "A"
   ],
-  "explain": "大規模(1000萬)向量 + metadata 過濾 + 低延遲 + 最少管理 → OpenSearch Serverless(向量+metadata filter)+ Bedrock Knowledge Bases RAG。S3 Vectors 的 metadata 不可過濾(C);Aurora pgvector(B)較適合中小規模且需自管。"
+  "explain": "大規模(1000萬)向量 + metadata 過濾 + 低延遲 + 最少管理 → OpenSearch Serverless(向量+metadata filter)+ Bedrock Knowledge Bases RAG。S3 Vectors 的 metadata 不可過濾(C);Aurora pgvector(B)較適合中小規模且需自管。",
+  "stem_zh": "一家金融服務公司正在建構一個客戶支援應用程式，根據與使用者查詢的語意相似度，從資料庫中擷取相關的金融法規文件。該應用程式必須與 Amazon Bedrock 整合以產生回應。該應用程式必須能夠搜尋英文、西班牙文與葡萄牙文的文件。該應用程式必須能依據 metadata（例如發佈日期、監管機構與文件類型）來過濾文件。資料庫儲存約 1,000 萬筆文件 embeddings。為了將營運負擔降到最低，公司希望採用一個能盡量減少管理與維護工作的解決方案。該應用程式必須為即時的客戶互動提供低延遲的回應。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "使用 Amazon OpenSearch Serverless 來提供向量搜尋功能與 metadata 過濾。連接到 Amazon Bedrock Knowledge Bases，以啟用使用 Anthropic Claude foundation model (FM) 的 Retrieval Augmented Generation (RAG) 功能。",
+   "B": "部署一個具有 pgvector 擴充功能的 Amazon Aurora PostgreSQL 資料庫。定義資料表來儲存 embeddings 與 metadata。使用 SQL 查詢來執行相似度搜尋。將擷取到的文件傳送到 Amazon Bedrock 以產生回應。",
+   "C": "使用 Amazon S3 Vectors 來設定向量索引與不可過濾的 metadata 欄位。將 S3 Vectors 與 Amazon Bedrock 整合，以啟用 Retrieval Augmented Generation (RAG) 功能。",
+   "D": "設定一個 Amazon Neptune Analytics 圖形資料庫。設定一個具有適當維度的向量索引來儲存文件 embeddings。使用 Amazon Bedrock 來執行基於圖形的擷取並產生回應。"
+  }
  },
  {
   "num": 7,
@@ -99,7 +143,14 @@
   "answers": [
    "A"
   ],
-  "explain": "漏精確術語/縮寫 + 回太多語意近但不相關 + 最少負擔 → hybrid search(向量語意 + 關鍵字精確匹配)。自建 SageMaker rerank(D)或換 Kendra(C)負擔較高。"
+  "explain": "漏精確術語/縮寫 + 回太多語意近但不相關 + 最少負擔 → hybrid search(向量語意 + 關鍵字精確匹配)。自建 SageMaker rerank(D)或換 Kendra(C)負擔較高。",
+  "stem_zh": "一家醫療公司正在建構一個使用 RAG 的生成式 AI (GenAI) 應用程式，以提供以實證為基礎的醫療資訊。該應用程式使用 Amazon OpenSearch Service 來擷取向量 embeddings。使用者回報搜尋經常遺漏包含確切醫療名詞與縮寫的結果，並回傳過多語意相似但不相關的文件。即使文件集合成長到數百萬份文件，公司也需要改善擷取品質並維持低終端使用者延遲。哪一個解決方案能以最少的營運負擔滿足這些需求？",
+  "options_zh": {
+   "A": "透過結合向量相似度與關鍵字比對來設定混合搜尋（hybrid search），以改善語意理解，以及確切名詞與縮寫的比對。",
+   "B": "將向量 embeddings 的維度從 384 增加到 1536。使用後處理 AWS Lambda function，在擷取後過濾掉不相關的結果。",
+   "C": "以 Amazon Kendra 取代 OpenSearch Service。在預處理期間使用查詢擴充（query expansion）來處理醫療縮寫與名詞變體。",
+   "D": "實作兩階段擷取架構，其中初始向量搜尋的結果由託管在 Amazon SageMaker AI 上的 ML 模型重新排序。"
+  }
  },
  {
   "num": 8,
@@ -113,7 +164,14 @@
   "answers": [
    "A"
   ],
-  "explain": "私有連線→Bedrock interface VPC endpoint(PrivateLink);欄位層級跨帳號存取→Lake Formation LF-Tag。NAT gateway/公網(B、C)非私有;S3 桶政策/IAM path(B、D)做不到欄位層級。"
+  "explain": "私有連線→Bedrock interface VPC endpoint(PrivateLink);欄位層級跨帳號存取→Lake Formation LF-Tag。NAT gateway/公網(B、C)非私有;S3 桶政策/IAM path(B、D)做不到欄位層級。",
+  "stem_zh": "一家公司在一個使用 Amazon Bedrock 的應用程式 AWS 帳戶中執行一個由生成式 AI (GenAI) 驅動的摘要應用程式。該應用程式架構包含一個 Amazon API Gateway REST API，會將請求轉發到附加在私有 VPC 子網路的 AWS Lambda functions。該應用程式會摘要公司儲存在集中式資料儲存帳戶中、受治理的 data lake 內的敏感客戶記錄。公司已在該資料儲存帳戶中啟用 Amazon S3、Amazon Athena 與 AWS Glue。公司必須確保該應用程式對 Amazon Bedrock 的呼叫只透過公司應用程式 VPC 與 Amazon Bedrock 之間的私有連線進行。公司的 data lake 必須在公司的各個 AWS 帳戶之間提供細緻的欄位層級存取控制。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "在應用程式帳戶中，為 Amazon Bedrock runtimes 建立介面 VPC endpoints。在私有子網路中執行 Lambda functions。在推論與資料平面政策上使用 IAM 條件，僅允許對已核准的 endpoints 與角色進行呼叫。在資料儲存帳戶中，使用 AWS Lake Formation 基於 LF-tag 的存取控制來建立資料表與欄位層級的跨帳戶授權。",
+   "B": "在私有子網路中執行 Lambda functions。設定一個 NAT gateway 以提供對 Amazon Bedrock 與 data lake 的存取。使用 S3 bucket 政策與 ACLs 來管理權限。將 AWS CloudTrail 記錄匯出到 Amazon S3 以進行每週審查。",
+   "C": "在應用程式帳戶中僅為 Amazon S3 建立一個 gateway endpoint。透過公開 endpoints 叫用 Amazon Bedrock。使用 AWS Lake Formation 中的資料庫層級授權來管理資料存取。將 AWS CloudTrail 記錄串流到 Amazon CloudWatch Logs。不要設定 metric filters 或 alarms。",
+   "D": "使用 VPC endpoints 在應用程式帳戶中提供對 Amazon Bedrock 與 Amazon S3 的存取。僅使用基於 IAM 路徑的政策來管理 data lake 存取。將 AWS CloudTrail 記錄傳送到 Amazon CloudWatch Logs。定期建立 dashboards，並允許公開後援（public fallback）以進行跨 Region 讀取來縮短設定時間。"
+  }
  },
  {
   "num": 9,
@@ -127,7 +185,14 @@
   "answers": [
    "B"
   ],
-  "explain": "prompt 版本控制 + 稽核 + 參數化 → Bedrock Prompt Management(版本控制+變數參數化)+ CloudTrail(稽核)+ IAM(審批權限)。自建 S3/tags/Step Functions(C、D)較零散。"
+  "explain": "prompt 版本控制 + 稽核 + 參數化 → Bedrock Prompt Management(版本控制+變數參數化)+ CloudTrail(稽核)+ IAM(審批權限)。自建 S3/tags/Step Functions(C、D)較零散。",
+  "stem_zh": "一家媒體公司必須使用 Amazon Bedrock，為 AI 生成的內容實作一套穩健的治理流程。公司需要管理數百個 prompt 範本。多個團隊跨多個 AWS Regions 使用這些範本來產生內容。該解決方案必須提供版本控制與核准工作流程，並包含待審查的通知。該解決方案還必須提供詳細的稽核軌跡，以記錄 prompt 活動，並提供一致的 prompt 參數化以強制執行品質標準。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "設定 Amazon Bedrock Studio prompt 範本。使用 Amazon CloudWatch 建立顯示 prompt 使用量 metrics 的 dashboards。將內容的核准狀態儲存在 Amazon DynamoDB 中。使用 AWS Lambda functions 來強制執行核准。",
+   "B": "使用 Amazon Bedrock Prompt Management 來實作版本控制。設定 AWS CloudTrail 以進行稽核記錄。使用 IAM 政策來控制核准權限。透過指定變數來建立參數化的 prompt 範本。",
+   "C": "使用 AWS Step Functions 建立核准工作流程。將 prompts 以文件形式儲存在 Amazon S3 中。使用 tags 來實作版本控制。使用 Amazon EventBridge 傳送通知。",
+   "D": "部署 Amazon SageMaker Canvas，並搭配儲存在 Amazon S3 中的 prompt 範本。使用 AWS CloudFormation 來實作版本控制。使用 AWS Config 來強制執行核准政策。"
+  }
  },
  {
   "num": 10,
@@ -141,7 +206,14 @@
   "answers": [
    "A"
   ],
-  "explain": "逐字串流 + 高並發 + 長回應(15-45s)→ WebSocket API + Lambda + InvokeModelWithResponseStream。前端輪詢(B)非真串流;前端直連用 IAM 憑證(C)不安全。"
+  "explain": "逐字串流 + 高並發 + 長回應(15-45s)→ WebSocket API + Lambda + InvokeModelWithResponseStream。前端輪詢(B)非真串流;前端直連用 IAM 憑證(C)不安全。",
+  "stem_zh": "一家公司正在開發一個客戶支援應用程式，使用 Amazon Bedrock foundation models (FMs) 為公司員工提供即時的 AI 協助。該應用程式必須在回應產生的同時，逐字元顯示 AI 生成的回應。該應用程式需要以最小的延遲支援數千名並行使用者。回應通常需要 15 到 45 秒才能完成。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "設定一個搭配 AWS Lambda 整合的 Amazon API Gateway WebSocket API。設定該 WebSocket API 以叫用 Amazon Bedrock 的 InvokeModelWithResponseStream API，並透過 WebSocket 連線串流部分回應。",
+   "B": "設定一個搭配 AWS Lambda 整合的 Amazon API Gateway REST API。設定該 REST API 以叫用 Amazon Bedrock 標準的 InvokeModel API，並在前端用戶端實作每 100 毫秒一次的輪詢以取得完整的回應區塊。",
+   "C": "使用 IAM 使用者憑證與 InvokeModelWithResponseStream API，實作前端用戶端直接連線到 Amazon Bedrock，不使用任何中介的 gateway 或 proxy 層。",
+   "D": "設定一個搭配 AWS Lambda 整合的 Amazon API Gateway HTTP API。設定該 HTTP API 以將完整回應快取在 Amazon DynamoDB 資料表中，並透過多個分頁的 GET 請求將回應提供給前端用戶端。"
+  }
  },
  {
   "num": 11,
@@ -157,7 +229,15 @@
    "A",
    "D"
   ],
-  "explain": "必填輸入為變數 + 一致輸出格式 → Prompt Management(A);偵測霸凌但不阻擋 → insults filter 設 detect(D,detect=只偵測通知不阻擋)。設 block(B)會阻擋,違反「不阻擋」。"
+  "explain": "必填輸入為變數 + 一致輸出格式 → Prompt Management(A);偵測霸凌但不阻擋 → insults filter 設 detect(D,detect=只偵測通知不阻擋)。設 block(B)會阻擋,違反「不阻擋」。",
+  "stem_zh": "一家公司正在使用 Amazon Bedrock 設計一個應用程式，以協助研究人員申請補助金。該應用程式以 Amazon Nova Pro foundation model (FM) 為基礎。該應用程式包含四個必填輸入，且必須以一致的文字格式提供回應。如果回應包含霸凌性語言，公司希望在 Amazon Bedrock 中收到通知。然而，公司並不想封鎖所有被標記的回應。公司建立了一個 Amazon Bedrock flow，會接收一個輸入 prompt 並將其傳送到 Amazon Nova Pro FM。Amazon Nova Pro FM 會提供回應。公司必須採取哪些額外步驟來滿足這些需求？（選擇兩項。）",
+  "options_zh": {
+   "A": "使用 Amazon Bedrock Prompt Management 將必填輸入指定為變數。選擇一個 Amazon Nova Pro FM。指定回應的輸出格式。將該 prompt 加入到 flow 的 prompts 節點中。",
+   "B": "建立一個套用 hate 內容過濾器的 Amazon Bedrock guardrail。將過濾器回應設定為封鎖（block）。將該 guardrail 加入到 flow 的 prompts 節點中。",
+   "C": "建立一個 Amazon Bedrock prompt router。指定一個 Amazon Nova Pro FM。將必填輸入作為變數加入到 flow 的 input 節點中。將 prompt router 加入到 prompts 節點中。將輸出格式加入到 output 節點中。",
+   "D": "建立一個套用 insults 內容過濾器的 Amazon Bedrock guardrail。將過濾器回應設定為偵測（detect）。將該 guardrail 加入到 flow 的 prompts 節點中。",
+   "E": "建立一個指定 Amazon Nova Pro FM 的 Amazon Bedrock application inference profile。在描述中指定回應的輸出格式。為每個輸入變數加入一個 tag。將該 profile 加入到 flow 的 prompts 節點中。"
+  }
  },
  {
   "num": 12,
@@ -171,7 +251,14 @@
   "answers": [
    "D"
   ],
-  "explain": "高準確 + 偵測幻覺 + 降人工成本 → 混合評估:LLM-as-a-judge 初篩 + 人工審 edge case + Bedrock 內建評估(檢索精度/幻覺率)。全人工或全 Comprehend 不符成本/能力。"
+  "explain": "高準確 + 偵測幻覺 + 降人工成本 → 混合評估:LLM-as-a-judge 初篩 + 人工審 edge case + Bedrock 內建評估(檢索精度/幻覺率)。全人工或全 Comprehend 不符成本/能力。",
+  "stem_zh": "一家醫療保健公司正在使用 Amazon Bedrock 建構一個 Retrieval Augmented Generation (RAG) 應用程式，以協助醫療從業人員做出臨床決策。該應用程式必須在病患資訊擷取上達到高準確度、辨識生成內容中的幻覺（hallucinations），並降低人工審查成本。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "使用 Amazon Comprehend 來分析並分類 RAG 回應，並擷取醫療實體與其關係。使用 AWS Step Functions 來協調自動化評估。設定 Amazon CloudWatch metrics 來追蹤實體辨識的信心分數。設定 Amazon CloudWatch，在準確度低於指定門檻時傳送警示。",
+   "B": "實作自動化的大型語言模型 (LLM) 評估，使用一個針對醫療內容微調的專用模型來評估所有回應。部署 AWS Lambda functions 以平行處理評估。將結果發佈到追蹤相關性與事實準確度的 Amazon CloudWatch metrics。",
+   "C": "設定 Amazon CloudWatch Synthetics，定期產生具有已知答案的測試查詢，並追蹤模型的成功率。設定 dashboards 來比較合成測試結果與預期結果。",
+   "D": "部署一個混合式評估系統，使用自動化的 LLM-as-a-judge 評估來初步篩選回應，並針對邊緣案例進行有針對性的人工審查。使用 Amazon SageMaker Feature Store 來維護評估資料集。使用內建的 Amazon Bedrock 評估來追蹤擷取精確度與幻覺率。"
+  }
  },
  {
   "num": 13,
@@ -187,7 +274,15 @@
    "B",
    "D"
   ],
-  "explain": "CRI 透過 eu.* 地理推理設定檔 → 擴展 SCP 允許 eu.amazon.nova-pro 推理設定檔(B,精確控制)+ 驗證 IAM 角色可在歐洲區透過該設定檔呼叫(D)。AdministratorAccess(A)過寬;eu.*(E)過寬不精確。"
+  "explain": "CRI 透過 eu.* 地理推理設定檔 → 擴展 SCP 允許 eu.amazon.nova-pro 推理設定檔(B,精確控制)+ 驗證 IAM 角色可在歐洲區透過該設定檔呼叫(D)。AdministratorAccess(A)過寬;eu.*(E)過寬不精確。",
+  "stem_zh": "一家公司在 AWS Control Tower 中設定了一個 landing zone。該公司處理必須留在歐盟境內的敏感資料。公司必須只使用 eu-central-1 Region。公司使用 SCPs 來強制執行資料駐留政策。公司的 GenAI 開發人員被指派了對 Amazon Bedrock 具有完整權限的 IAM 角色。公司必須確保 GenAI 開發人員只能透過 cross-Region inference (CRI) 並且只能在 eu-central-1 中，透過 Amazon Bedrock 使用 Amazon Nova Pro 模型。公司在 Amazon Bedrock 中為 GenAI 開發人員的 IAM 角色啟用了模型存取權。然而，當 GenAI 開發人員嘗試透過 Amazon Bedrock Chat/Text playground 叫用該模型時，GenAI 開發人員收到以下錯誤。User: arn:aws:sts::123456789012:assumed-role/AssumedDevRole/DevUserName Action: bedrock:InvokeModelWithResponseStream On resource(s): arn:aws:bedrock:eu-west-3::foundation-model/amazon.nova-pro-v1:0 Context: a service control policy explicitly denies the action（一項服務控制政策明確拒絕了該動作）。公司需要一個解決方案來解決此錯誤。該解決方案必須保留公司現有的治理控管，並提供精確的存取控制。該解決方案必須符合公司現有的資料駐留政策。哪一組解決方案能滿足這些需求？（選擇兩項。）",
+  "options_zh": {
+   "A": "為 GenAI 開發人員的 IAM 角色加入 AdministratorAccess 政策。",
+   "B": "擴充現有的 SCPs，以針對 eu.amazon.nova-pro-v1:0 inference profile 啟用 CRI。",
+   "C": "在 eu-west-3 Region 為 Amazon Nova Pro 啟用 Amazon Bedrock 模型存取權。",
+   "D": "驗證 GenAI 開發人員的 IAM 角色在所有能提供該模型的歐盟 AWS Regions 上，都具有透過 eu.amazon.nova-pro.v1:0 inference profile 叫用 Amazon Nova Pro 的權限。",
+   "E": "擴充現有的 SCP，以針對 eu.* inference profile 啟用 CRI。"
+  }
  },
  {
   "num": 14,
@@ -201,7 +296,14 @@
   "answers": [
    "C"
   ],
-  "explain": "少誤報 + 多種處理策略 + 輸入輸出皆過濾 → 單一 guardrail:content medium(降誤報)+ denied topics(投資建議)+ PII mask(回應)/block 金融資訊(輸入)+ 輸入輸出評估。全 high(A)誤報高;多 guardrail 串接(D)複雜。"
+  "explain": "少誤報 + 多種處理策略 + 輸入輸出皆過濾 → 單一 guardrail:content medium(降誤報)+ denied topics(投資建議)+ PII mask(回應)/block 金融資訊(輸入)+ 輸入輸出評估。全 high(A)誤報高;多 guardrail 串接(D)複雜。",
+  "stem_zh": "一家金融服務公司正在使用 Amazon Bedrock 開發一個客戶服務 AI 助理。該 AI 助理不得與使用者討論投資建議。該 AI 助理必須封鎖有害內容、遮蔽個人識別資訊 (PII)，並為合規報告維護稽核軌跡。該 AI 助理必須根據內容敏感度，對使用者輸入與模型回應兩者都套用內容過濾。公司需要一個能有效強制執行政策且誤判（false positives）最少的 Amazon Bedrock guardrail 設定。該解決方案必須為多種類型的敏感內容提供多種處理策略。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "設定單一 guardrail，並將所有類別的 content filters 設定為 high。針對投資建議設定 denied topics，並納入要封鎖的範例語句。設定對所有 PII 實體套用封鎖動作的敏感資訊過濾器。將該 guardrail 套用到所有模型推論呼叫。",
+   "B": "使用分層政策設定多個 guardrails。建立一個 guardrail 並將 content filters 設定為 high。將該 guardrail 設定為針對公開互動封鎖 PII。設定第二個 guardrail 並將 content filters 設定為 medium。將第二個 guardrail 設定為針對內部使用遮蔽 PII。設定多個特定主題的 guardrails 來封鎖投資建議，並設定 contextual grounding 檢查。",
+   "C": "設定一個 guardrail，並將有害內容的 content filters 設定為 medium。針對投資建議設定 denied topics，並納入清楚的定義與要封鎖的範例語句。設定敏感資訊過濾器，以在回應中遮蔽 PII 並在輸入中封鎖財務資訊。同時啟用輸入與輸出評估，並使用自訂的封鎖訊息以供稽核之用。",
+   "D": "為每個使用案例建立一個獨立的 guardrail。建立一個套用有害內容過濾器的 guardrail。建立一個針對投資建議套用主題過濾器的 guardrail。建立一個套用敏感資訊過濾器以封鎖 PII 的 guardrail。使用 AWS Step Functions 將這些 guardrails 依序串接在一起。根據內容分類使用條件邏輯。"
+  }
  },
  {
   "num": 15,
@@ -215,7 +317,14 @@
   "answers": [
    "C"
   ],
-  "explain": "「推薦了不在目錄的產品(幻覺)+ 慢」→ 建 Bedrock Knowledge Base + RAG(先從目錄檢索相關商品→提供給 Claude→只依檢索結果推薦,接地防幻覺)+ PerformanceConfigLatency=optimized(降延遲)。〔註:D 亦為部分題庫答案——OpenSearch 存目錄 + 對照目錄「驗證」推薦 + DynamoDB 快取;若考點強調「對推薦做存在性驗證」則選 D。本題依使用者定案選 C。〕"
+  "explain": "「推薦了不在目錄的產品(幻覺)+ 慢」→ 建 Bedrock Knowledge Base + RAG(先從目錄檢索相關商品→提供給 Claude→只依檢索結果推薦,接地防幻覺)+ PerformanceConfigLatency=optimized(降延遲)。〔註:D 亦為部分題庫答案——OpenSearch 存目錄 + 對照目錄「驗證」推薦 + DynamoDB 快取;若考點強調「對推薦做存在性驗證」則選 D。本題依使用者定案選 C。〕",
+  "stem_zh": "一家電子商務公司正在開發一個生成式 AI (GenAI) 解決方案，使用 Amazon Bedrock 搭配 Anthropic Claude 來向客戶推薦產品。客戶回報部分推薦的產品在網站上並未開放販售，或與客戶不相關。客戶也回報該解決方案產生某些推薦時花費很長時間。公司調查這些問題後發現，客戶與產品推薦解決方案之間的大多數互動都是獨特的。公司確認該解決方案推薦了不在公司產品型錄中的產品。公司必須解決這些問題。哪一個解決方案能滿足此需求？",
+  "options_zh": {
+   "A": "提高 Amazon Bedrock Guardrails 中的 grounding。啟用 Automated Reasoning 檢查。設定 provisioned throughput。",
+   "B": "使用 prompt engineering 將模型回應限制在相關產品上。使用串流技術（例如 InvokeModelWithResponseStream 動作）來降低客戶感知到的延遲。",
+   "C": "建立一個 Amazon Bedrock knowledge base。實作 Retrieval Augmented Generation (RAG)。將 PerformanceConfigLatency 參數設定為 optimized。",
+   "D": "將產品型錄資料儲存在 Amazon OpenSearch Service 中。對照產品型錄驗證模型的產品推薦。使用 Amazon DynamoDB 來實作回應快取。"
+  }
  },
  {
   "num": 16,
@@ -231,7 +340,15 @@
    "A",
    "B"
   ],
-  "explain": "可擴展 agent + 記憶 + session 權限 + 事件/同步呼叫 → Bedrock AgentCore(內建記憶/身分/事件/可觀測,A)+ 用 API Gateway/EventBridge 註冊動作讓 AgentCore 呼叫(B,免自建編排)。"
+  "explain": "可擴展 agent + 記憶 + session 權限 + 事件/同步呼叫 → Bedrock AgentCore(內建記憶/身分/事件/可觀測,A)+ 用 API Gateway/EventBridge 註冊動作讓 AgentCore 呼叫(B,免自建編排)。",
+  "stem_zh": "一家公司正在使用 AWS Lambda 與 REST APIs 建構一個推理代理（reasoning agent），以自動化支援工作流程。該系統必須跨互動保留記憶、共享相關的代理狀態，並支援事件驅動的叫用與同步叫用。該系統還必須強制執行存取控制與基於工作階段（session）的權限。哪一組步驟能提供最具擴展性的解決方案？（選擇兩項。）",
+  "options_zh": {
+   "A": "使用 Amazon Bedrock AgentCore 來管理記憶與具工作階段感知的推理。部署具有內建身分支援、事件處理與可觀測性（observability）的代理。",
+   "B": "使用 Amazon API Gateway 與 Amazon EventBridge 將 Lambda functions 與 REST APIs 註冊為動作（actions）。啟用 Amazon Bedrock AgentCore 以叫用這些 Lambda functions 與 REST APIs，而無需自訂協調程式碼。",
+   "C": "使用 Amazon Bedrock Agents 進行推理與對話管理。使用 AWS Step Functions 與 Amazon SQS 佇列進行協調。將代理狀態儲存在 Amazon DynamoDB 中，以在各步驟之間維護記憶。",
+   "D": "將推理邏輯部署為 Amazon ECS 上、位於 Amazon API Gateway 後方的容器。使用 Amazon Aurora 來儲存記憶資料與身分資料。",
+   "E": "使用 Amazon Kendra 與 Amazon Bedrock 建構自訂的 RAG pipeline。使用 AWS Lambda 來協調工具叫用。將代理狀態儲存在 Amazon S3 中。"
+  }
  },
  {
   "num": 17,
@@ -245,7 +362,14 @@
   "answers": [
    "A"
   ],
-  "explain": "多跳關係 + 捕捉間接關係 + 最少負擔 → Bedrock Knowledge Bases Graph RAG + Neptune Analytics(圖資料庫,內建多跳關係分析)。自建關係邏輯(B、C)負擔高。"
+  "explain": "多跳關係 + 捕捉間接關係 + 最少負擔 → Bedrock Knowledge Bases Graph RAG + Neptune Analytics(圖資料庫,內建多跳關係分析)。自建關係邏輯(B、C)負擔高。",
+  "stem_zh": "一家金融服務公司正在開發一個 Retrieval Augmented Generation (RAG) 應用程式，以協助投資分析師查詢跨多種投資工具、市場類別與法規環境的複雜金融關係。該資料集包含高度互聯且具有多跳（multi-hop）關係的實體。分析師必須能夠全面性地檢視這些關係，以提供準確的投資指引。該應用程式必須提供能掌握金融實體之間間接關係的完整答案。該應用程式必須在 3 秒內產生回應。哪一個解決方案能以最少的營運負擔滿足這些需求？",
+  "options_zh": {
+   "A": "使用 Amazon Bedrock Knowledge Bases 搭配 Graph RAG 與 Amazon Neptune Analytics 來儲存金融資料。分析實體之間的多跳關係，並自動辨識跨文件的相關資訊。",
+   "B": "使用 Amazon Bedrock Knowledge Bases 與 Amazon OpenSearch Service 向量儲存，以實作自訂的關係辨識邏輯，使用 AWS Lambda functions 依序查詢多個向量 embeddings。",
+   "C": "使用具有 k-最近鄰（k-NN）搜尋的 Amazon OpenSearch Serverless 向量資料庫。在執行於 Amazon EC2 Auto Scaling 群組的應用程式層中實作手動的關係對應。",
+   "D": "使用 Amazon DynamoDB 以自訂索引系統儲存金融資料。使用 AWS Lambda function 根據輸入問題查詢相關記錄。使用 Amazon SageMaker AI 來產生回應。"
+  }
  },
  {
   "num": 18,
@@ -259,7 +383,14 @@
   "answers": [
    "C"
   ],
-  "explain": "近即時偵測幻覺 + token 異常 + 最少開發 → Guardrails contextual grounding(偵測幻覺)+ invocation logging(S3)+ CloudWatch anomaly detection(token 異常自動基準)。SageMaker Model Monitor(D)是 SageMaker 模型用,不適用 Bedrock。"
+  "explain": "近即時偵測幻覺 + token 異常 + 最少開發 → Guardrails contextual grounding(偵測幻覺)+ invocation logging(S3)+ CloudWatch anomaly detection(token 異常自動基準)。SageMaker Model Monitor(D)是 SageMaker 模型用,不適用 Bedrock。",
+  "stem_zh": "一家醫療保健公司使用 Amazon Bedrock 部署一個應用程式，以產生臨床文件的摘要。該應用程式的回應品質不一致，偶爾會出現事實性幻覺（hallucinations）。每月成本超出公司預估的 40%。一位 GenAI 開發人員必須實作一個近即時的監控解決方案，以偵測幻覺、辨識異常的 token 消耗，並提供成本異常的早期警告。該解決方案必須只需最少的自訂開發工作與維護負擔。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "設定 Amazon CloudWatch alarms 來監控 InputTokenCount 與 OutputTokenCount metrics 以偵測異常。將模型叫用記錄儲存在 Amazon S3 bucket 中。使用 AWS Glue 與 Amazon Athena 來辨識潛在的幻覺。",
+   "B": "執行使用 LLM 判斷的 Amazon Bedrock 評估工作來偵測幻覺。設定 Amazon CloudWatch 來追蹤 token 使用量。建立一個 AWS Lambda function 來處理 CloudWatch metrics。設定該 Lambda function 以傳送使用模式通知。",
+   "C": "設定 Amazon Bedrock，將模型叫用記錄儲存在 Amazon S3 bucket 中。啟用文字輸出記錄。設定 Amazon Bedrock guardrails 以執行 contextual grounding 檢查來偵測幻覺。為 token 使用量 metrics 建立 Amazon CloudWatch 異常偵測 alarms。",
+   "D": "使用 AWS CloudTrail 記錄所有 Amazon Bedrock API 呼叫。在 Amazon QuickSight 中建立自訂 dashboard 以視覺化 token 使用模式。使用 Amazon SageMaker Model Monitor 來偵測生成摘要中的品質漂移（quality drift）。"
+  }
  },
  {
   "num": 19,
@@ -273,7 +404,14 @@
   "answers": [
    "D"
   ],
-  "explain": "資料源註冊 + metadata 標記歸因 + 跨服務稽核 → Glue Data Catalog 註冊+標記 + CloudTrail 跨服務日誌。CloudWatch Logs(B)非存取稽核;只標 S3(A、C)不夠全面註冊。"
+  "explain": "資料源註冊 + metadata 標記歸因 + 跨服務稽核 → Glue Data Catalog 註冊+標記 + CloudTrail 跨服務日誌。CloudWatch Logs(B)非存取稽核;只標 S3(A、C)不夠全面註冊。",
+  "stem_zh": "一家公司正在建構一個生成式 AI (GenAI) 應用程式，根據各種內部與外部資料來源產生內容。公司希望確保生成的輸出完全可追溯。該應用程式必須支援資料來源註冊，並啟用 metadata 標記，以將內容歸因到其原始來源。該應用程式還必須在整個 pipeline 中維護資料存取與使用的稽核記錄。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "使用 AWS Lake Formation 來編目資料來源並控制存取。直接在 Amazon S3 中套用 metadata tags。使用 AWS CloudTrail 來監控 API 活動。",
+   "B": "使用 AWS Glue Data Catalog 來註冊並標記資料來源。使用 Amazon CloudWatch Logs 來監控存取模式與應用程式行為。",
+   "C": "將資料儲存在 Amazon S3 中，並使用物件標記（object tagging）進行歸因。使用 AWS Glue Data Catalog 來管理結構描述（schema）資訊。使用 AWS CloudTrail 來記錄對 S3 buckets 的存取。",
+   "D": "使用 AWS Glue Data Catalog 來註冊所有資料來源。套用 metadata tags 以歸因資料來源。使用 AWS CloudTrail 來記錄跨各服務的存取與活動。"
+  }
  },
  {
   "num": 20,
@@ -287,7 +425,14 @@
   "answers": [
    "B"
   ],
-  "explain": "45s→10s + 多分析類型 → Step Functions Parallel state 同時呼叫多 Lambda(並行)。並行才能大幅縮短;序列處理(A、C、D)無法達標。"
+  "explain": "45s→10s + 多分析類型 → Step Functions Parallel state 同時呼叫多 Lambda(並行)。並行才能大幅縮短;序列處理(A、C、D)無法達標。",
+  "stem_zh": "一家金融服務公司需要建構一個文件分析系統，使用 Amazon Bedrock 來處理季度報告。該系統必須分析財務資料、執行情緒分析，並驗證跨多批報告的合規性。每批包含 5 份報告。每份報告需要多次 foundation model (FM) 呼叫。該解決方案必須在 10 秒內完成每批的分析。目前的循序處理每批需要 45 秒。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "使用具有 provisioned concurrency 的 AWS Lambda functions 來循序處理每種分析類型。將 Lambda function 逾時設定為 10 秒。設定具有指數退避（exponential backoff）的自動重試。",
+   "B": "使用具有 Parallel 狀態的 AWS Step Functions，同時為每種分析類型叫用各自獨立的 AWS Lambda functions。設定 Amazon Bedrock 用戶端逾時。使用 Amazon CloudWatch metrics 來追蹤執行時間與模型推論延遲。",
+   "C": "建立一個 Amazon SQS 佇列來緩衝分析請求。部署多個具有 reserved concurrency 的 AWS Lambda functions。設定每個 Lambda function 循序處理每份報告的不同面向，然後合併結果。",
+   "D": "部署一個 Amazon ECS 叢集，執行循序處理每份報告的容器。使用負載平衡器來分配批次工作負載。設定基於 CPU 使用率的自動擴展政策，以因應需求波動。"
+  }
  },
  {
   "num": 21,
@@ -301,7 +446,14 @@
   "answers": [
    "A"
   ],
-  "explain": "防 prompt injection(Guardrails content filter)+ 跨區故障轉移(guardrail profile 跨區推理)+ 稽核干預事件(CloudWatch Logs 自訂指標)。WAF(B)非 AI 內容防護;Comprehend 自訓分類(C)負擔高。"
+  "explain": "防 prompt injection(Guardrails content filter)+ 跨區故障轉移(guardrail profile 跨區推理)+ 稽核干預事件(CloudWatch Logs 自訂指標)。WAF(B)非 AI 內容防護;Comprehend 自訓分類(C)負擔高。",
+  "stem_zh": "某公司正在使用 Amazon Bedrock 建構一個面向客戶的 AI 助理，用來處理敏感的客戶詢問。公司必須採用縱深防禦 (defense-in-depth) 的安全控制機制，以阻擋複雜的 prompt injection 攻擊。公司必須保留所有安全介入動作的稽核日誌。這個 AI 助理還必須具備跨 Region 的容錯移轉 (failover) 能力。哪一個解決方案可以滿足這些需求？",
+  "options_zh": {
+   "A": "設定 Amazon Bedrock guardrails，使用 content filters 來防範 prompt injection 攻擊。將 content filters 設為 high。使用 guardrail profile 來實作跨 Region 的 guardrail 推論。使用 Amazon CloudWatch Logs 搭配自訂 metrics 來擷取詳細的 guardrail 介入事件。",
+   "B": "設定 Amazon Bedrock guardrails，使用 content filters 來防範 prompt injection 攻擊。將 content filters 設為 high。使用 AWS WAF 來阻擋可疑的輸入。使用 AWS CloudTrail 記錄 API 呼叫以供稽核。",
+   "C": "部署 Amazon Comprehend 自訂分類功能來偵測 prompt injection 攻擊。使用 Amazon API Gateway 驗證請求。使用 Amazon CloudWatch Logs 搭配自訂 metrics 來擷取詳細的介入事件。",
+   "D": "設定 Amazon Bedrock guardrails，使用自訂 content filters 來防範有害內容。將 content filters 設為 high。使用 word filters 來防範已知的攻擊模式。設定跨 Region 的 guardrail 複寫以提供容錯移轉能力。將日誌儲存在 AWS CloudTrail 中以供合規稽核。"
+  }
  },
  {
   "num": 22,
@@ -315,7 +467,14 @@
   "answers": [
    "A"
   ],
-  "explain": "金絲雀漸進切流 + 自動回滾(無人工)→ EventBridge → Step Functions 分階段切流 + 等待 + Lambda 檢查 CloudWatch + 達標增流/未達自動回滾。SageMaker endpoint variants(C)不能代表 Bedrock 模型。"
+  "explain": "金絲雀漸進切流 + 自動回滾(無人工)→ EventBridge → Step Functions 分階段切流 + 等待 + Lambda 檢查 CloudWatch + 達標增流/未達自動回滾。SageMaker endpoint variants(C)不能代表 Bedrock 模型。",
+  "stem_zh": "某公司正在為一個支付處理 API 設計金絲雀部署 (canary deployment) 策略。系統必須支援根據即時推論 metrics、歷史流量模式與服務健康狀態，在多個 Amazon Bedrock 模型之間自動逐步轉移流量。此解決方案必須能夠逐步增加流向新模型版本的流量。當 metrics 維持健康時，系統必須增加流量；當效能降到可接受門檻以下時，系統必須減少流量。公司需要在部署階段全面監控推論延遲與錯誤率。公司還必須能夠停止部署並回復到先前的模型版本，且不需要任何人工介入。哪一個解決方案可以滿足這些需求？",
+  "options_zh": {
+   "A": "使用 Amazon Bedrock 搭配 provisioned throughput 來託管模型的各個版本。設定一個 Amazon EventBridge 規則，在發布新模型版本時觸發一個 AWS Step Functions 工作流程。設定該工作流程分階段轉移流量、等待指定的時間區間，並呼叫一個 AWS Lambda 函式來檢查 Amazon CloudWatch 的效能 metrics。設定該工作流程在 metrics 達到門檻時增加流量，並在效能 metrics 降到門檻以下時觸發流量回復。",
+   "B": "使用 AWS Lambda 函式來呼叫各種 Amazon Bedrock 模型版本。使用 Amazon API Gateway HTTP API 搭配 stage variables 與加權路由，逐步將流量轉移到新模型版本。使用 Amazon CloudWatch 監控效能 metrics。使用外部邏輯來調整模型版本之間的流量，並在效能降到門檻以下時進行回復。",
+   "C": "使用 Amazon SageMaker AI endpoint variants 來表示多個 Amazon Bedrock 模型版本。使用 variant weights 來轉移流量。使用 Amazon CloudWatch 監控效能 metrics。使用 SageMaker Model Monitor 在效能降到指定門檻以下時觸發 AWS Lambda 函式來回復模型部署。設定一個 Amazon EventBridge 規則，在偵測到異常時回復模型部署。",
+   "D": "使用 Amazon OpenSearch Service 來追蹤推論日誌。設定 OpenSearch Service 呼叫一個 AWS Systems Manager Automation runbook，以根據推論日誌更新 Amazon Bedrock 模型 endpoint 來轉移流量。"
+  }
  },
  {
   "num": 23,
@@ -329,7 +488,14 @@
   "answers": [
    "B"
   ],
-  "explain": "provisioned 未用但被節流 → 程式碼仍用 base model ID(走 on-demand)。把 modelId 換成 CreateProvisionedModelThroughput 回傳的 provisioned model ARN,才會用到已購產能。"
+  "explain": "provisioned 未用但被節流 → 程式碼仍用 base model ID(走 on-demand)。把 modelId 換成 CreateProvisionedModelThroughput 回傳的 provisioned model ARN,才會用到已購產能。",
+  "stem_zh": "某金融服務公司使用一個 AI 應用程式透過 Amazon Bedrock 來處理財務文件。在營業時間內，該應用程式每小時處理約 10,000 個請求，這需要一致的 throughput。公司使用 CreateProvisionedModelThroughput API 來購買 provisioned throughput。Amazon CloudWatch metrics 顯示 provisioned 容量並未被使用，而 on-demand 請求卻遭到 throttling。公司在應用程式中發現以下程式碼：python response = bedrock_runtime.invoke_model(modelId=\"anthropic.claude-v2\", body=json.dumps(payload)) 公司需要讓應用程式使用 provisioned throughput 並解決 throttling 問題。哪一個解決方案可以滿足這些需求？",
+  "options_zh": {
+   "A": "增加 provisioned throughput 設定中的 model units (MUs) 數量。",
+   "B": "將 model ID 參數替換為 CreateProvisionedModelThroughput API 所回傳的 provisioned 模型的 ARN。",
+   "C": "加入指數退避 (exponential backoff) 重試邏輯，以處理尖峰時段的 throttling 例外。",
+   "D": "修改應用程式，改用 InvokeModelWithResponseStream API 而非 InvokeModel API。"
+  }
  },
  {
   "num": 24,
@@ -343,7 +509,14 @@
   "answers": [
    "A"
   ],
-  "explain": "推理 + 引用來源 + 最少負擔 → Bedrock Knowledge Bases 啟用來源歸因(內建引用)+ Claude Messages RAG 高相關門檻。自建追蹤(D)或 SageMaker 自訂模型(C)負擔高。"
+  "explain": "推理 + 引用來源 + 最少負擔 → Bedrock Knowledge Bases 啟用來源歸因(內建引用)+ Claude Messages RAG 高相關門檻。自建追蹤(D)或 SageMaker 自訂模型(C)負擔高。",
+  "stem_zh": "某公司正在使用 Amazon Bedrock 建構一個 AI 顧問應用程式。該應用程式將為客戶提供建議。公司需要該應用程式能夠解釋其推理過程，並為資料引用特定來源。該應用程式必須從公司資料來源擷取資訊，並為建議顯示逐步推理過程。該應用程式還必須將資料論述連結到來源文件，並將回應延遲維持在 3 秒以下。哪一個解決方案能以最少的營運負擔滿足這些需求？",
+  "options_zh": {
+   "A": "使用 Amazon Bedrock Knowledge Bases 並啟用來源歸屬 (source attribution)。使用 Anthropic Claude Messages API 搭配 RAG，為來源文件設定高相關性門檻。將推理過程與引用來源儲存在 Amazon S3 中以供稽核。",
+   "B": "使用 Amazon Bedrock 搭配 Anthropic Claude 模型並啟用 extended thinking。設定 4,000 個 token 的 thinking budget。將推理軌跡與引用來源儲存在 Amazon DynamoDB 中以供稽核。",
+   "C": "使用 Amazon SageMaker AI 搭配自訂的 Anthropic Claude 模型。使用該模型的 reasoning 參數與 AWS Lambda 來處理回應。從另一個獨立的 Amazon RDS 資料庫加入來源引用。",
+   "D": "使用 Amazon Bedrock 搭配 Anthropic Claude 模型與思維鏈 (chain-of-thought) 推理。使用 Amazon Bedrock Knowledge Bases API 設定自訂的擷取追蹤。使用 Amazon CloudWatch 監控回應延遲 metrics。"
+  }
  },
  {
   "num": 25,
@@ -357,7 +530,14 @@
   "answers": [
    "A"
   ],
-  "explain": "model-specific token 限制 + 提前告警 + 成本分攤 → Lambda model-specific tokenizer 預估 token + CloudWatch alarm(接近門檻)+ DynamoDB 記錄成本。Guardrails 無 token quota policy(B 為虛構)。"
+  "explain": "model-specific token 限制 + 提前告警 + 成本分攤 → Lambda model-specific tokenizer 預估 token + CloudWatch alarm(接近門檻)+ DynamoDB 記錄成本。Guardrails 無 token quota policy(B 為虛構)。",
+  "stem_zh": "某金融服務公司透過 Amazon Bedrock 使用多個 foundation models (FMs) 來支援其生成式 AI (GenAI) 應用程式。為了遵守一項關於在敏感財務資料上使用 GenAI 的新法規，公司需要一個 token 管理解決方案。該 token 管理解決方案必須在應用程式接近模型專屬的 token 上限時主動發出警示。此解決方案還必須每分鐘處理超過 5,000 個請求，並維護 token 使用 metrics 以便將成本分攤到各事業單位。哪一個解決方案可以滿足這些需求？",
+  "options_zh": {
+   "A": "在 AWS Lambda 函式中開發模型專屬的 tokenizer。設定該 Lambda 函式在將請求送往 Amazon Bedrock 之前估算 token 使用量。設定該 Lambda 函式將 metrics 發布到 Amazon CloudWatch，並在請求接近門檻時觸發警報。將詳細的 token 使用量儲存在 Amazon DynamoDB 中以報告成本。",
+   "B": "實作具有 token 配額政策的 Amazon Bedrock Guardrails。擷取遭拒請求的 metrics。設定 Amazon EventBridge 規則，根據 Amazon Bedrock Guardrails 的 metrics 觸發通知。使用 Amazon CloudWatch dashboards 來視覺化跨模型的 token 使用趨勢。",
+   "C": "為失敗的請求部署一個 Amazon SQS dead-letter queue。設定一個 AWS Lambda 函式來分析與 token 相關的失敗。使用 Amazon CloudWatch Logs Insights，根據 Amazon Bedrock API 回應中的錯誤日誌產生 token 使用模式的報告。",
+   "D": "使用 Amazon API Gateway 為所有 Amazon Bedrock API 呼叫建立一個 proxy。根據具有預定義 token 配額的自訂使用方案來設定請求 throttling。設定 API Gateway 拒絕將超出 token 上限的請求。"
+  }
  },
  {
   "num": 26,
@@ -371,7 +551,14 @@
   "answers": [
    "D"
   ],
-  "explain": "多輪 + 每日更新文件(RAG)+ 訂單 API + 稽核 + 最少負擔 → Bedrock agent + action groups(訂單 API)+ Knowledge Base(RAG)+ trace events(稽核)。每日更新用 RAG,不用 fine-tune/continued pre-training(A、B)。"
+  "explain": "多輪 + 每日更新文件(RAG)+ 訂單 API + 稽核 + 最少負擔 → Bedrock agent + action groups(訂單 API)+ Knowledge Base(RAG)+ trace events(稽核)。每日更新用 RAG,不用 fine-tune/continued pre-training(A、B)。",
+  "stem_zh": "某零售公司正在開發一個客服應用程式，該應用程式每天必須處理 10,000 個關於產品、訂單與保固的查詢。該應用程式必須能夠回應關於 50,000 份每天都會更新的產品文件的查詢。該應用程式必須與一個訂單管理 API 整合，以查詢訂單狀態並協助處理退貨。該應用程式必須在與客戶的多輪互動過程中維持上下文。公司必須為應用程式的回應收集完整的稽核軌跡。哪一個解決方案能以最少的營運負擔滿足這些需求？",
+  "options_zh": {
+   "A": "為每個產品類別部署一個經過微調的 Amazon Bedrock Anthropic Claude 模型。建立 AWS Lambda 函式將每個模型連接到訂單管理 API。將對話歷史儲存在 Amazon DynamoDB 中。",
+   "B": "在 Amazon Bedrock 上建立一個使用持續預訓練 (continued pre-training) 的自訂模型來處理所有產品文件。設定一個 Amazon API Gateway REST API，使用 AWS Lambda 函式將模型連接到訂單管理 API。",
+   "C": "使用 Amazon SageMaker AI 搭配容器來部署模型。使用 Amazon Kendra 搜尋產品文件。使用 AWS Step Functions 來協調對訂單管理 API 的呼叫。",
+   "D": "使用具有 action groups 的 Amazon Bedrock agent 來與訂單管理 API 整合。將一個 Amazon Bedrock knowledge base 與該 agent 關聯，以使用檢索增強生成 (Retrieval Augmentation Generation, RAG) 來搜尋產品文件。啟用 trace events 來擷取稽核軌跡。"
+  }
  },
  {
   "num": 27,
@@ -385,7 +572,14 @@
   "answers": [
    "B"
   ],
-  "explain": "「Step Functions 256KB 超限 + Bedrock 多代理 + 維持 ReAct + 最少負擔」→ 用 Bedrock 整合的 Input.S3Uri/Output.S3Uri,把大型模型輸入/輸出讀寫到 S3,狀態間只保留 S3 參照(原生機制避開 256KB,無需自建儲存)。〔註:A(DynamoDB 存中間輸出+只傳引用+Map state 取回)是通用解法,但需自建讀寫邏輯負擔較高;壓縮/解壓(C)可能仍超限;拆多狀態機+EventBridge(D)大改架構。〕"
+  "explain": "「Step Functions 256KB 超限 + Bedrock 多代理 + 維持 ReAct + 最少負擔」→ 用 Bedrock 整合的 Input.S3Uri/Output.S3Uri,把大型模型輸入/輸出讀寫到 S3,狀態間只保留 S3 參照(原生機制避開 256KB,無需自建儲存)。〔註:A(DynamoDB 存中間輸出+只傳引用+Map state 取回)是通用解法,但需自建讀寫邏輯負擔較高;壓縮/解壓(C)可能仍超限;拆多狀態機+EventBridge(D)大改架構。〕",
+  "stem_zh": "某電子商務公司正在使用 Amazon Bedrock 建構一個生成式 AI (GenAI) 應用程式。該應用程式使用 AWS Step Functions 來協調一個多 agent 工作流程，以產生詳細的產品說明。該工作流程包含三個依序執行的狀態：說明產生器、技術規格驗證器，以及品牌語氣一致性檢查器。每個狀態都會產生中間推理軌跡與輸出，並傳遞給下一個狀態。該應用程式使用一個 Amazon S3 儲存貯體作為流程儲存與輸出儲存。在測試期間，公司發現 Step Functions 各狀態之間的輸出經常超過 256 KB 配額，導致工作流程失敗。一位 GenAI 開發人員需要修改應用程式架構，以有效處理 Step Functions 的 256 KB 配額並維持工作流程的可觀測性。修改後的架構必須保留現有的多 agent 推理與行動 (ReAct) 模式。哪一個解決方案能以最少的營運負擔滿足這些需求？",
+  "options_zh": {
+   "A": "將中間輸出儲存在 Amazon DynamoDB 中。在狀態之間只傳遞參照。建立一個 Map 狀態，在每個 agent 的處理步驟需要時，從 DynamoDB 擷取完整的資料。",
+   "B": "設定一個 Amazon Bedrock 整合，在大型輸出的 input 參數中使用 S3 儲存貯體 URI。使用 ResultPath 欄位與 ResultSelector 欄位在 agent 步驟之間路由 S3 參照，同時維持依序驗證的工作流程。",
+   "C": "使用 AWS Lambda 函式在每個 agent 狀態之前將輸出壓縮到小於 256 KB。設定每個 agent 任務在處理之前解壓縮輸出，並在傳遞給下一個狀態之前壓縮結果。",
+   "D": "設定一個獨立的 Step Functions 狀態機來處理每個 agent 的處理。使用 Amazon EventBridge 協調各狀態機之間的執行流程。使用 S3 參照作為事件資料中的輸出。"
+  }
  },
  {
   "num": 28,
@@ -399,7 +593,14 @@
   "answers": [
    "B"
   ],
-  "explain": "語意搜尋 + 超大規模(2000萬/2億)+ <500ms + 最少開發 → OpenSearch + Bedrock embeddings + k-NN。大規模選 OpenSearch;pgvector(C)較適合中小規模。"
+  "explain": "語意搜尋 + 超大規模(2000萬/2億)+ <500ms + 最少開發 → OpenSearch + Bedrock embeddings + k-NN。大規模選 OpenSearch;pgvector(C)較適合中小規模。",
+  "stem_zh": "某公司提供一項服務，協助全球各地的使用者探索新餐廳。該服務有 5,000 萬個每月活躍使用者。公司希望在一個包含 2,000 萬家餐廳與 2 億則評論的資料庫中實作語意搜尋解決方案。公司目前將資料儲存在一個 PostgreSQL 資料庫中。此解決方案必須支援複雜的自然語言查詢，並在 500 ms 內為至少 95% 的查詢回傳結果。此解決方案必須為每小時更新的餐廳詳細資料維持資料新鮮度。此解決方案還必須在尖峰使用期間具有成本效益地擴展。哪一個解決方案能以最少的開發工作量滿足這些需求？",
+  "options_zh": {
+   "A": "將餐廳資料遷移到 Amazon OpenSearch Service。實作以關鍵字為基礎的搜尋規則，使用自訂分析器與相關性調校，根據料理類型、特色與地點等屬性來尋找餐廳。建立 Amazon API Gateway HTTP API endpoint，將使用者查詢轉換為結構化的搜尋參數。",
+   "B": "將餐廳資料遷移到 Amazon OpenSearch Service。使用 Amazon Bedrock 中的 foundation model (FM)，從餐廳說明、評論與菜單項目產生向量 embeddings。當使用者送出自然語言查詢時，使用同一個 FM 將查詢轉換為 embeddings。執行 k-nearest neighbors (k-NN) 搜尋以找出語意相似的結果。",
+   "C": "將餐廳資料保留在 PostgreSQL 中並實作 pgvector 擴充套件。使用 Amazon Bedrock 中的 foundation model (FM)，從餐廳資料產生向量 embeddings。將向量 embeddings 直接儲存在 PostgreSQL 中。建立一個 AWS Lambda 函式，使用同一個 FM 將自然語言查詢轉換為向量表示。設定該 Lambda 函式在資料庫內執行相似度搜尋。",
+   "D": "使用自訂的擷取管線將餐廳資料遷移到一個 Amazon Bedrock knowledge base。設定該 knowledge base 自動從餐廳資訊產生 embeddings。使用具有內建向量搜尋功能的 Amazon Bedrock Retrieve API，直接以自然語言輸入來查詢該 knowledge base。"
+  }
  },
  {
   "num": 29,
@@ -413,7 +614,14 @@
   "answers": [
    "B"
   ],
-  "explain": "診斷不一致 + 比較 prompt 指標 + 版本歷史 → 程式庫版本控制 + 複雜文件測試套件 + 自動化測試框架比較版本。手動測試(A)無法量化;Comprehend Medical(D)不評 prompt 一致性。"
+  "explain": "診斷不一致 + 比較 prompt 指標 + 版本歷史 → 程式庫版本控制 + 複雜文件測試套件 + 自動化測試框架比較版本。手動測試(A)無法量化;Comprehend Medical(D)不評 prompt 一致性。",
+  "stem_zh": "某醫療公司使用 Amazon Bedrock 來支援一個臨床文件摘要系統。該系統在處理複雜的臨床文件時會產生不一致的摘要。該系統在處理簡單的臨床文件時表現良好。公司需要一個能診斷不一致問題、根據既定 metrics 比較 prompt 效能，並維護 prompt 版本歷史記錄的解決方案。哪一個解決方案可以滿足這些需求？",
+  "options_zh": {
+   "A": "使用 Amazon Bedrock 中的 Prompt management 建立多個 prompt 變體。手動使用簡單的臨床文件測試這些 prompt。使用 Amazon Bedrock 主控台部署表現最佳的版本。",
+   "B": "在程式碼儲存庫中為 prompt 實作版本控制，並建立一個包含複雜臨床文件與可量化評估 metrics 的測試套件。使用自動化測試框架來比較 prompt 版本並記錄效能模式。",
+   "C": "將每個新的 prompt 版本部署到各自獨立的 Amazon Bedrock API endpoint。在這些 endpoint 之間分流生產流量。設定 Amazon CloudWatch 擷取回應 metrics 與使用者回饋，以自動選擇版本。",
+   "D": "在 Amazon Bedrock Flows 中建立一個自訂的 prompt 評估流程，將相同的臨床文件輸入套用到不同的 prompt 變體。使用 Amazon Comprehend Medical 來分析並為每個版本的事實準確性評分。"
+  }
  },
  {
   "num": 30,
@@ -429,7 +637,15 @@
    "A",
    "B"
   ],
-  "explain": "降幻覺 → CoT 逐步推理+事實驗證(A)+ RAG 語意分塊接地(B)。提高 temperature(D)增加幻覺;一次整篇(E)即現況問題;guardrails pattern 阻擋(C)不可靠。"
+  "explain": "降幻覺 → CoT 逐步推理+事實驗證(A)+ RAG 語意分塊接地(B)。提高 temperature(D)增加幻覺;一次整篇(E)即現況問題;guardrails pattern 阻擋(C)不可靠。",
+  "stem_zh": "某公司使用 Amazon Bedrock 為客戶產生技術內容。當公司的模型為長篇技術文件產生摘要時，公司最近遇到了 hallucination 輸出激增的情況。模型輸出包含不準確或捏造的細節。公司目前的解決方案使用一個大型 foundation model (FM)，搭配一個將整份文件放在單一輸入中的基本 one-shot prompt。公司需要一個能減少 hallucination 並達成事實準確性目標的解決方案。此解決方案必須每小時處理超過 1,000 份文件，並在 3 秒內為每份文件提供摘要。哪一組解決方案的組合可以滿足這些需求？（選擇兩項。）",
+  "options_zh": {
+   "A": "實作 zero-shot 思維鏈 (chain-of-thought, CoT) 指示，要求模型在產生每份摘要之前進行逐步推理並明確驗證事實。",
+   "B": "使用檢索增強生成 (Retrieval Augmented Generation, RAG) 搭配一個 Amazon Bedrock knowledge base。套用語意分塊 (semantic chunking) 與調校過的 embeddings，使摘要立基於來源內容。",
+   "C": "設定 Amazon Bedrock guardrails 來阻擋任何符合與 hallucination 內容相關模式的產生輸出。",
+   "D": "提高 Amazon Bedrock 中的 temperature 參數。",
+   "E": "提示 Amazon Bedrock 模型一次性為整份文件產生摘要。"
+  }
  },
  {
   "num": 31,
@@ -443,7 +659,14 @@
   "answers": [
    "C"
   ],
-  "explain": "偵測偏離基準的降級 + 關聯告警 → CloudWatch Application Insights + 自訂指標(含維度)+ anomaly detection(自動基準)+ Logs Insights。anomaly detection 是「偏離基準」的關鍵。"
+  "explain": "偵測偏離基準的降級 + 關聯告警 → CloudWatch Application Insights + 自訂指標(含維度)+ anomaly detection(自動基準)+ Logs Insights。anomaly detection 是「偏離基準」的關鍵。",
+  "stem_zh": "某公司有一個推薦系統。該系統的應用程式執行於 Amazon EC2 執行個體上。這些應用程式會對 Amazon Bedrock foundation models (FMs) 進行 API 呼叫，以分析客戶行為並產生個人化的產品推薦。該系統正遇到間歇性問題。有些推薦與客戶偏好不符。公司需要一個可觀測性解決方案，用來監控營運 metrics，並偵測相較於既定基準的營運效能降級模式。此解決方案還必須在 FM 行為偏離預期模式時，於 10 分鐘內產生帶有關聯資料的警示。哪一個解決方案可以滿足這些需求？",
+  "options_zh": {
+   "A": "為應用程式基礎設施設定 Amazon CloudWatch Container Insights。為延遲門檻設定 CloudWatch 警報。使用 CloudWatch embedded metric format 為 token 計數加入自訂 metrics。建立 CloudWatch dashboards 來視覺化資料。",
+   "B": "實作 AWS X-Ray 來追蹤通過應用程式各元件的請求。啟用 CloudWatch Logs Insights 來進行錯誤模式偵測。設定 AWS CloudTrail 來監控所有對 Amazon Bedrock 的 API 呼叫。在 Amazon QuickSight 中建立自訂 dashboards。",
+   "C": "為應用程式資源啟用 Amazon CloudWatch Application Insights。使用 CloudWatch embedded metric format 並搭配請求類型與使用者區隔的維度，為推薦品質、token 使用量與回應延遲建立自訂 metrics。為模型 metrics 設定 CloudWatch anomaly detection。使用 CloudWatch Logs Insights 建立日誌模式分析。",
+   "D": "使用 Amazon OpenSearch Service 搭配 Observability 外掛。使用 Amazon Kinesis 擷取模型 metrics 與日誌。建立自訂的 Piped Processing Language (PPL) 查詢來分析模型行為模式。建立營運 dashboards 以即時視覺化異常。"
+  }
  },
  {
   "num": 32,
@@ -457,7 +680,14 @@
   "answers": [
    "C"
   ],
-  "explain": "「超出 context window + 截斷/不一致」→ semantic chunking(依語意邊界切塊,保技術概念完整)+ RetrieveAndGenerate API(依嵌入相似度動態只取最相關塊,不塞爆 context window→避免截斷、提升一致性)。〔註:B(hierarchical chunking 父8000/子2000 + Knowledge Bases 內建檢索取相關父塊 + overlap)亦為部分題庫答案;兩者皆用 RAG 取相關塊避免塞滿,屬有爭議題。本題依使用者定案選 C。〕把多塊塞滿到上限(A)仍截斷;等分各段獨立處理(D)割裂脈絡。"
+  "explain": "「超出 context window + 截斷/不一致」→ semantic chunking(依語意邊界切塊,保技術概念完整)+ RetrieveAndGenerate API(依嵌入相似度動態只取最相關塊,不塞爆 context window→避免截斷、提升一致性)。〔註:B(hierarchical chunking 父8000/子2000 + Knowledge Bases 內建檢索取相關父塊 + overlap)亦為部分題庫答案;兩者皆用 RAG 取相關塊避免塞滿,屬有爭議題。本題依使用者定案選 C。〕把多塊塞滿到上限(A)仍截斷;等分各段獨立處理(D)割裂脈絡。",
+  "stem_zh": "某企業應用程式使用一個 Amazon Bedrock foundation model (FM) 來處理並分析 50 到 200 頁的技術文件。當處理超過 FM 上下文視窗 (context window) 上限的文件時，使用者會遇到不一致的回應並收到被截斷的輸出。哪一個解決方案可以解決這個問題？",
+  "options_zh": {
+   "A": "設定固定大小分塊 (fixed-size chunking)，每個區塊 4,000 個 token 並有 20% 重疊。使用應用程式層級的邏輯，在進行推論呼叫之前依序串接多個區塊，直到達到 FM 的 200,000 個 token 最大上下文視窗為止。",
+   "B": "使用階層式分塊 (hierarchical chunking)，父區塊 8,000 個 token、子區塊 2,000 個 token。使用 Amazon Bedrock Knowledge Bases 的內建檢索功能，根據查詢上下文自動選擇相關的父區塊。設定重疊 token 以維持語意連貫性。",
+   "C": "使用語意分塊 (semantic chunking)，斷點百分位門檻為 95%，緩衝區大小為 3 個句子。使用 Amazon Bedrock RetrieveAndGenerate API 呼叫，根據 embedding 相似度分數動態選擇最相關的區塊。",
+   "D": "建立一個前處理 AWS Lambda 函式，使用 FM 的 tokenizer 分析文件的 token 計數。設定該 Lambda 函式將文件分割成可容納於上下文視窗 80% 以內的等量區段。設定該 Lambda 函式獨立處理每個區段，然後再彙總結果。"
+  }
  },
  {
   "num": 33,
@@ -471,7 +701,14 @@
   "answers": [
    "B"
   ],
-  "explain": "50萬並發 + <200ms + 預算 + 自動擴展 → 低延遲即時模型 + provisioned throughput + 自動擴展政策。大型推理/批次(A、D)延遲高;GPU 專屬端點(C)成本高。"
+  "explain": "50萬並發 + <200ms + 預算 + 自動擴展 → 低延遲即時模型 + provisioned throughput + 自動擴展政策。大型推理/批次(A、D)延遲高;GPU 專屬端點(C)成本高。",
+  "stem_zh": "某公司正在開發一個生成式 AI (GenAI) 應用程式，即時分析客服通話並為人工客服專員產生建議回應。該應用程式必須在尖峰時段處理 500,000 個並行通話，且每個建議的端對端延遲必須小於 200 ms。公司使用現有架構來轉錄客戶通話的音訊串流。該應用程式不得超過預先定義的每月運算預算，並且必須維持自動擴展能力。哪一個解決方案可以滿足這些需求？",
+  "options_zh": {
+   "A": "在 Amazon Bedrock 上部署一個大型、複雜的推理模型。購買 provisioned throughput 並針對批次處理進行最佳化。",
+   "B": "在 Amazon Bedrock 上部署一個低延遲、針對即時最佳化的模型。購買 provisioned throughput 並設定自動擴展政策。",
+   "C": "在使用專屬 GPU 執行個體的 Amazon SageMaker AI 即時 endpoint 上部署一個大型語言模型 (LLM)。",
+   "D": "在針對批次處理最佳化的 Amazon SageMaker AI 無伺服器 endpoint 上部署一個中型語言模型。"
+  }
  },
  {
   "num": 34,
@@ -487,7 +724,15 @@
    "A",
    "C"
   ],
-  "explain": "資料集到 S3 + IAM/CORS 給評估作業存取(A);Bedrock model evaluation job(內建)+ RWK(文字)/BERTScore(摘要)正確準確度指標 + CloudWatch 儀表板(C)。準確度指標非 word error rate/toxicity(D、E 錯指標)。"
+  "explain": "資料集到 S3 + IAM/CORS 給評估作業存取(A);Bedrock model evaluation job(內建)+ RWK(文字)/BERTScore(摘要)正確準確度指標 + CloudWatch 儀表板(C)。準確度指標非 word error rate/toxicity(D、E 錯指標)。",
+  "stem_zh": "某電子商務公司正在建構一個內部平台，使用 Amazon Bedrock foundation models (FMs) 來開發生成式 AI 應用程式。開發人員需要根據與電子商務使用情境相符的評估來選擇模型。該平台必須在 dashboards 中顯示文字生成與摘要的準確性 metrics。公司有自訂的電子商務資料集可作為標準化的評估輸入。哪一組步驟的組合能以最少的營運負擔滿足這些需求？（選擇兩項。）",
+  "options_zh": {
+   "A": "將資料集匯入到一個 Amazon S3 儲存貯體。提供適當的 IAM 權限與跨來源資源共用 (CORS) 權限，讓評估作業能存取這些資料集。",
+   "B": "將資料集匯入到一個 Amazon S3 儲存貯體。提供適當的 IAM 權限與 VPC endpoint 設定，讓評估作業能存取這些資料集。",
+   "C": "設定一個 AWS Lambda 函式，依排程在 Amazon Bedrock 主控台中建立模型評估作業。提供包含資料集的 S3 儲存貯體 URI 作為輸入。設定評估作業以衡量文字生成的 real world knowledge (RWK) 分數與摘要的 BERT Score。設定第二個 Lambda 函式來檢查作業狀態並將自訂日誌發布到 Amazon CloudWatch。建立一個自訂的 Amazon CloudWatch Logs Insights dashboard。",
+   "D": "依排程使用 Amazon SageMaker Clarify 來建立模型評估作業。使用開源框架來建立並執行標準化評估。將結果發布到 Amazon CloudWatch namespaces。使用 word error rate 分數作為文字生成的準確性 metrics，並使用 toxicity 作為摘要的準確性 metrics。設定一個 AWS Lambda 函式來檢查作業狀態並將自訂日誌發布到 CloudWatch。建立一個自訂的 Amazon CloudWatch Logs Insights dashboard。",
+   "E": "依排程執行一個 Amazon SageMaker AI notebook 作業，使用 fmevals 或 ragas 框架來執行使用 S3 儲存貯體中資料集的評估。在 notebook 中撰寫 Python 程式碼，直接對 FMs 進行 InvokeModel API 呼叫並處理其回應以進行評估。將作業狀態與結果發布到 Amazon CloudWatch Logs，以衡量文字生成的 real world knowledge (RWK) 分數與摘要的 toxicity 作為準確性 metrics。建立一個自訂的 CloudWatch Logs Insights dashboard。"
+  }
  },
  {
   "num": 35,
@@ -501,7 +746,14 @@
   "answers": [
    "B"
   ],
-  "explain": "人工審批 + 稽核 → Step Functions waitForTaskToken 暫停等人工 + SendTaskSuccess 回傳決策 + DynamoDB 存決策。Glue(C、D)非審批編排;ElastiCache(D)易失不適合稽核。"
+  "explain": "人工審批 + 稽核 → Step Functions waitForTaskToken 暫停等人工 + SendTaskSuccess 回傳決策 + DynamoDB 存決策。Glue(C、D)非審批編排;ElastiCache(D)易失不適合稽核。",
+  "stem_zh": "某電梯維護公司使用 Amazon Bedrock 開發了一個 AI 助理應用程式。該應用程式產生電梯維護建議，以支援公司的電梯技師。公司使用 Amazon Kinesis Data Streams 來收集電梯感測器資料。新的法規要求人工技師必須審查所有 AI 產生的建議。公司需要建立人工監督工作流程，以審查並核准 AI 建議。公司必須儲存所有人工技師的審查決定以供稽核。哪一個解決方案可以滿足這些需求？",
+  "options_zh": {
+   "A": "使用 AWS Lambda 函式與 Amazon SQS 佇列建立自訂的核准工作流程，供人工審查 AI 建議。將所有審查決定儲存在 Amazon DynamoDB 中以供稽核。",
+   "B": "建立一個 AWS Step Functions 工作流程，其中包含一個使用 waitForTaskToken API 暫停執行的人工核准步驟。在人工技師完成審查後，使用一個 AWS Lambda 函式呼叫帶有核准決定的 SendTaskSuccess API。將所有審查決定儲存在 Amazon DynamoDB 中。",
+   "C": "建立一個包含人工核准步驟的 AWS Glue 工作流程。在人工技師審查後，將應用程式與一個呼叫 SendTaskSuccess API 的 AWS Lambda 函式整合。將所有人工技師的審查決定儲存在 Amazon DynamoDB 中。",
+   "D": "設定具有自訂事件模式的 Amazon EventBridge 規則，將 AI 建議路由給人工技師審查。建立 AWS Glue 作業來處理人工技師的核准佇列。使用 Amazon ElastiCache 來快取所有人工技師的審查決定。"
+  }
  },
  {
   "num": 36,
@@ -519,7 +771,16 @@
    "B",
    "D"
   ],
-  "explain": "掃描文件抽取+低信心人工審(同區)→ Textract + A2I 同區(A);去 PII + Guardrails + 區域 IAM 強制駐留(B);S3 存原件 + 區域 IAM + 物件標記稽核(D)。Kendra 抽欄位(C)非用途;Clarify(F)非必要。"
+  "explain": "掃描文件抽取+低信心人工審(同區)→ Textract + A2I 同區(A);去 PII + Guardrails + 區域 IAM 強制駐留(B);S3 存原件 + 區域 IAM + 物件標記稽核(D)。Kendra 抽欄位(C)非用途;Clarify(F)非必要。",
+  "stem_zh": "某銀行正在建構一個生成式 AI (GenAI) 應用程式，使用 Amazon Bedrock 透過掃描的財務文件來評估貸款申請。該應用程式必須從文件中擷取結構化資料。該應用程式必須在推論之前遮蔽個人可識別資訊 (PII)。該應用程式必須使用 foundation models (FMs) 來產生核准。該應用程式必須將低信心度的文件擷取結果路由給與貸款申請人位於同一 AWS Region 的人工審查員。公司必須確保該應用程式遵守嚴格的 Region 資料落地與可稽核性要求。該應用程式必須能夠擴展以每天處理 25,000 件申請，並提供 99.9% 的可用性。哪一組解決方案的組合可以滿足這些需求？（選擇三項。）",
+  "options_zh": {
+   "A": "在同一個 Region 內部署 Amazon Textract 與 Amazon Augmented AI (Amazon A2I)，以從掃描的文件中擷取相關資料。將低信心度的頁面路由給人工審查員。",
+   "B": "使用 AWS Lambda 函式在推論之前偵測並遮蔽提交文件中的 PII。套用 Amazon Bedrock guardrails 以防止模型輸出中出現不當或未經授權的內容。設定 Region 專屬的 IAM 角色以強制執行資料落地要求並控制對已擷取資料的存取。",
+   "C": "使用 Amazon Kendra 與 Amazon OpenSearch Service，在推論之前從上傳的文件中以語意方式擷取欄位層級的值。",
+   "D": "將上傳的文件儲存在 Amazon S3 中並套用物件中繼資料。設定 IAM 政策，將原始文件儲存在與每位申請人相同的 Region 內。啟用物件標記 (object tagging) 以供未來稽核。",
+   "E": "使用 AWS Glue Data Quality 來驗證結構化的文件資料。使用 AWS Step Functions 來協調一個審查工作流程，其中包含一個 prompt engineering 步驟，將已驗證的資料轉換為最佳化的 prompt，然後再呼叫 Amazon Bedrock 來評估貸款申請。",
+   "F": "使用 Amazon SageMaker Clarify，根據 Amazon Bedrock 所做的模型評分決定產生公平性與偏差報告。"
+  }
  },
  {
   "num": 37,
@@ -533,7 +794,14 @@
   "answers": [
    "B"
   ],
-  "explain": "「Q Business 依群組做存取控制 + 最少負擔」→ 桶頂層放「單一 ACL 設定檔」,每個 entry 把一個 S3 prefix 對應到 IAM Identity Center 群組,在資料源 Access Control 指定該檔路徑(集中一處維護,最省;結構天然適合 prefix→group 映射)。〔註:A(每個部門資料夾各放 acl.json)亦為部分題庫答案;兩者皆用 ACL 檔做文件層級控制,屬有爭議題。本題依使用者定案選 B。〕permissions set(C)是 AWS 資源權限非 Q Business 文件層級檢索控制;metadata.json 的 ACL(D)非正確強制機制。"
+  "explain": "「Q Business 依群組做存取控制 + 最少負擔」→ 桶頂層放「單一 ACL 設定檔」,每個 entry 把一個 S3 prefix 對應到 IAM Identity Center 群組,在資料源 Access Control 指定該檔路徑(集中一處維護,最省;結構天然適合 prefix→group 映射)。〔註:A(每個部門資料夾各放 acl.json)亦為部分題庫答案;兩者皆用 ACL 檔做文件層級控制,屬有爭議題。本題依使用者定案選 B。〕permissions set(C)是 AWS 資源權限非 Q Business 文件層級檢索控制;metadata.json 的 ACL(D)非正確強制機制。",
+  "stem_zh": "某軟體公司正在使用 Amazon Q Business 建構一個 AI 助理，讓員工能透過自然語言 prompt 存取公司資訊與個人資訊。公司將這些資訊儲存在一個 Amazon S3 儲存貯體中。公司的每個部門在該 S3 儲存貯體中都有一個專屬的字首 (prefix)。每個物件名稱都包含其所屬部門的 S3 字首。每個部門在 AWS IAM Identity Center 中只能隸屬於單一群組。每位員工只隸屬於單一部門。公司將 Amazon Q Business 設定為以 S3 儲存貯體中儲存的資料作為資料來源。公司需要確保該 AI 助理會根據使用者的 IAM Identity Center 群組成員資格來遵守存取控制。哪一個解決方案能以最少的營運負擔滿足這項需求？",
+  "options_zh": {
+   "A": "在每個部門資料夾中建立一個名為 acl.json 的 JSON 檔案。在每個檔案中建立存取控制項目，指定應該有權存取該部門資料的 IAM Identity Center 群組。在資料來源設定的 Access Control 區段中指明該 JSON 檔案的位置。",
+   "B": "在 S3 儲存貯體的最上層建立單一一個名為 acl.json 的 JSON 檔案。加入存取控制項目，將每個部門的 S3 字首對應到其相對應的 IAM Identity Center 群組。在資料來源設定的 Access Control 區段中指明該 JSON 檔案的位置。",
+   "C": "為每個 IAM Identity Center 群組建立一個獨立的權限集 (permissions set)，拒絕存取 S3 儲存貯體中的所有字首。為每個群組的權限集加入一個 StringNotEquals 條件鍵，指定該群組所關聯的部門。將這些權限集附加到 Identity Center 群組。",
+   "D": "在 S3 儲存貯體的最上層建立一個名為 metadata.json 的中繼資料檔案。在該檔案中加入一個 AccessControlList 物件，指定每個部門字首的 S3 路徑。指定應該有權存取每個部門字首的 IAM Identity Center 群組。在資料來源的中繼資料設定中參照該檔案位置。"
+  }
  },
  {
   "num": 38,
@@ -547,7 +815,14 @@
   "answers": [
    "B"
   ],
-  "explain": "只用核准文件 + 引用來源 + 不幻覺 + 最少負擔 → Bedrock Knowledge Base + RetrieveAndGenerate API(單一 API 含檢索+生成+引用)。Retrieve+InvokeModel 自組(D)或自建後處理(A)負擔較高。"
+  "explain": "只用核准文件 + 引用來源 + 不幻覺 + 最少負擔 → Bedrock Knowledge Base + RetrieveAndGenerate API(單一 API 含檢索+生成+引用)。Retrieve+InvokeModel 自組(D)或自建後處理(A)負擔較高。",
+  "stem_zh": "某醫療保健公司正在使用 Amazon Bedrock 建構一個協助執業醫師做出臨床決策的系統。該系統必須僅根據經核准的醫療文件向醫師提供治療建議，並且必須引用特定來源。該系統不得產生 hallucination 或產出事實錯誤的資訊。哪一個解決方案能以最少的營運負擔滿足這些需求？",
+  "options_zh": {
+   "A": "將 Amazon Bedrock 與 Amazon Kendra 整合以擷取經核准的文件。實作自訂的後處理，將產生的回應與來源文件比對並加入引用來源。",
+   "B": "部署一個 Amazon Bedrock knowledge base 並將其連接到經核准的臨床來源文件。使用 Amazon Bedrock RetrieveAndGenerate API 從 knowledge base 回傳引用來源。",
+   "C": "使用 Amazon Bedrock 與 Amazon Comprehend Medical 來擷取醫療實體。實作針對一個醫療術語資料庫進行比對的驗證邏輯。",
+   "D": "使用一個 Amazon Bedrock knowledge base，搭配 Retrieve API 呼叫與 InvokeModel API 呼叫來擷取經核准的臨床來源文件。實作驗證邏輯，以與擷取到的來源進行比對並引用來源。"
+  }
  },
  {
   "num": 39,
@@ -561,7 +836,14 @@
   "answers": [
    "B"
   ],
-  "explain": "即時逐步建議 + <1s + 雙向串流 → Transcribe streaming(partial results,說話中即出片段)+ InvokeModelWithResponseStream + WebSocket。batch(C)非即時;Titan Embeddings(D)是嵌入非建議生成。"
+  "explain": "即時逐步建議 + <1s + 雙向串流 → Transcribe streaming(partial results,說話中即出片段)+ InvokeModelWithResponseStream + WebSocket。batch(C)非即時;Titan Embeddings(D)是嵌入非建議生成。",
+  "stem_zh": "某金融服務公司正在開發一個即時生成式 AI (GenAI) 助理，以支援人工客服中心專員。該 GenAI 助理必須即時轉錄客戶的語音、分析上下文，並在客戶仍在說話時為客服中心專員提供漸進式的建議。為了維持回應速度，該 GenAI 助理必須將從語音到初始回應顯示的端對端延遲維持在 1 秒以下。該架構必須僅使用受管理的 AWS 服務，並且必須支援雙向串流，以確保客服中心專員能即時收到更新。哪一個解決方案可以滿足這些需求？",
+  "options_zh": {
+   "A": "使用 Amazon Transcribe streaming API 來轉錄通話。將文字傳遞給 Amazon Comprehend 以執行情感分析。使用 InvokeModel API 將結果送入 Amazon Bedrock 上的 Anthropic Claude。將結果儲存在 Amazon DynamoDB 中。使用一個 WebSocket API 來顯示結果。",
+   "B": "使用啟用部分結果 (partial results) 的 Amazon Transcribe streaming，在客戶說完之前就傳遞已轉錄文字的片段。使用 InvokeModelWithResponseStream API 將文字片段轉發給 Amazon Bedrock。透過一個 Amazon API Gateway WebSocket API 將回應串流給客服中心專員。",
+   "C": "使用 Amazon Transcribe 批次處理將通話轉換為文字。使用 ConverseStream API 將完整的逐字稿傳遞給 Amazon Bedrock 上的 Anthropic Claude。透過一個客服中心專員可從其工作電腦存取的 Amazon Lex 聊天機器人介面回傳回應。",
+   "D": "使用 Amazon Transcribe streaming API 搭配一個 AWS Lambda 函式來轉錄每個音訊片段。設定該 Lambda 函式使用 InvokeModel API 呼叫 Amazon Bedrock 上的 Amazon Titan Embeddings 模型。設定該 Lambda 函式將結果發布到一個 Amazon SNS 主題。讓客服中心專員訂閱該 SNS 主題。"
+  }
  },
  {
   "num": 40,
@@ -575,7 +857,14 @@
   "answers": [
    "D"
   ],
-  "explain": "不當內容(文+圖)+ PII + 整合 S3 + 最少負擔 → Step Functions + Bedrock guardrails(文字)+ Comprehend PII + Rekognition 圖片審查。自建 SageMaker 審查模型(B)負擔高;Textract 是 OCR 非審查(C)。"
+  "explain": "不當內容(文+圖)+ PII + 整合 S3 + 最少負擔 → Step Functions + Bedrock guardrails(文字)+ Comprehend PII + Rekognition 圖片審查。自建 SageMaker 審查模型(B)負擔高;Textract 是 OCR 非審查(C)。",
+  "stem_zh": "某媒體公司正在推出一個平台，讓每小時數以千計的使用者上傳圖片與文字內容。該平台使用 Amazon Bedrock 處理上傳的內容以產生創意作品。公司需要一個解決方案來確保該平台不會處理或產出不當內容。該平台不得在創意作品中暴露個人可識別資訊 (PII)。此解決方案必須與公司現有的 Amazon S3 儲存工作流程整合。哪一個解決方案能以最少的基礎設施管理負擔滿足這些需求？",
+  "options_zh": {
+   "A": "啟用 Enhanced Monitoring 工具。使用 Amazon CloudWatch 警報來篩選流向平台的流量。使用 Amazon Comprehend PII 偵測來前處理資料。建立一個 CloudWatch 警報來監控 Amazon Comprehend PII 偵測事件。建立一個包含 Amazon Rekognition 圖片內容審核步驟的 AWS Step Functions 工作流程。",
+   "B": "使用具有請求驗證範本的 Amazon API Gateway HTTP API，在將上傳的內容儲存到 Amazon S3 之前篩選內容。使用 Amazon SageMaker AI 建構自訂的內容審核模型，在將處理後的內容送往 Amazon Bedrock 之前先處理內容。",
+   "C": "建立一個 Amazon Cognito 使用者集區，使用預先驗證 (pre-authentication) 的 AWS Lambda 函式來執行內容審核檢查。使用 Amazon Textract 篩選文字內容，並使用 Amazon Rekognition 篩選圖片內容，然後才允許使用者將內容上傳到平台。",
+   "D": "建立一個 AWS Step Functions 工作流程，使用內建的 Amazon Bedrock guardrails 來篩選內容。使用 Amazon Comprehend PII 偵測來前處理內容。使用 Amazon Rekognition 圖片內容審核。"
+  }
  },
  {
   "num": 41,
@@ -589,7 +878,14 @@
   "answers": [
    "D"
   ],
-  "explain": "公司核准資源 + 不做專案層修改 → Amazon Q Developer customization(集中納入核准資料源,跨開發者套用)。A、B、C 都是專案層(workspace/資料夾)修改,違反需求。"
+  "explain": "公司核准資源 + 不做專案層修改 → Amazon Q Developer customization(集中納入核准資料源,跨開發者套用)。A、B、C 都是專案層(workspace/資料夾)修改,違反需求。",
+  "stem_zh": "某公司已為公司內所有開發人員設定 Amazon Q Developer Pro 授權。該公司維護了一份已核准資源清單，開發人員在開發應用程式時必須使用這些資源。已核准資源包括內部函式庫、專有的演算法技術，以及具有已核准樣式的範例程式碼。一個新的開發團隊正在使用 Amazon Q Developer 開發一個全新的 Java 應用程式。該公司必須確保這個新的開發團隊使用公司的已核准資源。該公司不希望進行專案層級的修改。哪個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "建立一個包含所有已核准內部函式庫、演算法與程式碼範例的 Git repository。將此 Git repository 在本地納入應用程式專案中作為 workspace 的一部分。確保開發人員使用 @workspace context 從該 Git repository 取得建議。",
+   "B": "在專案根資料夾中，建立一個名為 .amazonq/rules 的資料夾。將已核准的內部函式庫、演算法與程式碼範例加入此資料夾。",
+   "C": "在應用程式專案中建立一個名為 rules 的資料夾。將指引與程式碼存放在該資料夾中，供 Amazon Q Developer 參考以產生程式碼建議。",
+   "D": "建立一個包含已核准資料來源的 Amazon Q Developer customization。確保開發人員使用該 customization 來開發應用程式。"
+  }
  },
  {
   "num": 42,
@@ -603,7 +899,14 @@
   "answers": [
    "A"
   ],
-  "explain": "低延遲 + 流量激增 + 40%重複 + 最省成本 → latency-optimized inference + prompt caching(重複 context)。為尖峰買固定 provisioned(B)離峰浪費,不夠省。"
+  "explain": "低延遲 + 流量激增 + 40%重複 + 最省成本 → latency-optimized inference + prompt caching(重複 context)。為尖峰買固定 provisioned(B)離峰浪費,不夠省。",
+  "stem_zh": "某電子商務公司正使用 Amazon Bedrock 建置客戶服務 AI 助理。該 AI 助理每天需要處理超過 50,000 筆客戶詢問。在促銷活動期間，該 AI 助理偶爾會經歷高達每天 150,000 筆詢問的流量尖峰。分析顯示，40% 的詢問遵循相似的模式，且共用相同的 context。一位 GenAI 開發人員必須設計一個解決方案，以確保該 AI 助理在流量尖峰期間維持低延遲與一致的效能。哪個解決方案能以最具成本效益的方式滿足這些需求？",
+  "options_zh": {
+   "A": "在向 Amazon Bedrock 發出的請求的 performance configuration 中，將 latency 參數設定為 optimized，以設定 latency-optimized inference。使用 prompt caching 來處理重複性的詢問。",
+   "B": "購買足以處理尖峰流量負載的 provisioned throughput 與 model units (MUs)。使用 Amazon ElastiCache (Redis OSS) 快取重複性的詢問。",
+   "C": "使用 Amazon Bedrock Agents 與自訂 knowledge bases 來預先處理客戶詢問。設定 cross-Region inference 以分散流量。",
+   "D": "使用 AWS Lambda functions，透過自訂的 prompt routing 機制預先處理請求。使用 Amazon DynamoDB 作為快取層來處理常見問題。"
+  }
  },
  {
   "num": 43,
@@ -617,7 +920,14 @@
   "answers": [
    "C"
   ],
-  "explain": "固定分塊切斷語意 → 改語意邊界分塊(完整論點/條款/章節)+ 重新生成嵌入。加大維度(A)不解決分塊問題且更慢;靜態摘要(B)失動態檢索;DynamoDB keyword(D)失語意。"
+  "explain": "固定分塊切斷語意 → 改語意邊界分塊(完整論點/條款/章節)+ 重新生成嵌入。加大維度(A)不解決分塊問題且更慢;靜態摘要(B)失動態檢索;DynamoDB keyword(D)失語意。",
+  "stem_zh": "某法律研究公司有一個使用 Amazon Bedrock 與 Amazon OpenSearch Service 的檢索增強生成 (Retrieval Augmented Generation, RAG) 應用程式。該應用程式為 1,500 萬份法律文件（包括法規、法院判決與案例摘要）儲存 768 維的 vector embeddings。該公司目前的 chunking 策略將文字切割為固定長度的 500 個 token 區塊。目前的 chunking 策略經常將具有上下文關聯的資訊（例如法律論點、法院意見或法規引用）切割到不同的 chunk 中。研究人員回報，生成的輸出經常遺漏關鍵 context 或引用過時的法律資訊。最近的應用程式日誌顯示回應時間增加了 40%。p95 latency 指標超過 2 秒。該公司預期此應用程式的儲存需求將在一年內從 90 GB 成長至 360 GB。該公司需要一個解決方案，以在大規模情況下改善檢索相關性與系統效能。哪個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "在不改變現有 chunking 或前處理策略的情況下，將 embedding vector 的維度從 768 增加到 4,096。",
+   "B": "以儲存在 Amazon S3 中的靜態、預先撰寫的摘要取代動態檢索。使用 Amazon CloudFront 提供這些摘要，以降低運算需求並改善可預測性。",
+   "C": "更新 chunking 策略，使用語意邊界（例如完整的法律論點、條款或章節）而非固定的 token 限制。重新產生 vector embeddings 以配合新的 chunk 結構。",
+   "D": "從 OpenSearch Service 遷移至 Amazon DynamoDB。實作以關鍵字為基礎的索引，以加快法律概念的查詢速度。"
+  }
  },
  {
   "num": 44,
@@ -631,7 +941,14 @@
   "answers": [
    "B"
   ],
-  "explain": "澄清流程(需暫停等使用者回覆)+ 加密 + 高並發 → Step Functions Standard + Wait for Callback(等回覆)+ DynamoDB on-demand + SSE。Express(A)不支援長暫停等待回呼;ElastiCache(D)易失不適合持久記錄。"
+  "explain": "澄清流程(需暫停等使用者回覆)+ 加密 + 高並發 → Step Functions Standard + Wait for Callback(等回覆)+ DynamoDB on-demand + SSE。Express(A)不支援長暫停等待回呼;ElastiCache(D)易失不適合持久記錄。",
+  "stem_zh": "某公司正在開發一個由生成式 AI (GenAI) 驅動的客戶支援應用程式，該程式使用 Amazon Bedrock foundation models (FMs)。該應用程式必須在與同一位使用者的多次互動中維持對話 context。該應用程式必須執行釐清工作流程以處理模糊的使用者查詢。該公司必須儲存每位使用者對話的加密記錄，以用於個人化。該應用程式必須能夠處理數千名並行使用者，同時快速回應每位使用者。哪個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "使用 AWS Step Functions Express workflow 來協調對話流程。呼叫 AWS Lambda functions 執行釐清邏輯。將對話歷史儲存在 Amazon RDS 中，並使用 session ID 作為主鍵。",
+   "B": "使用 AWS Step Functions Standard workflow 來協調釐清工作流程。納入 Wait for a Callback 模式來管理這些工作流程。將對話歷史儲存在 Amazon DynamoDB 中。購買 on-demand capacity 並設定 server-side encryption。",
+   "C": "使用 Amazon API Gateway REST API 部署該應用程式，以將使用者請求路由至一個用於更新與檢索對話 context 的 AWS Lambda function。將對話歷史儲存在 Amazon S3 中並設定 server-side encryption。將每次互動儲存為各自獨立的 JSON 檔案。",
+   "D": "使用 AWS Lambda functions 呼叫 Amazon Bedrock inference API。使用 Amazon SQS queues 來協調釐清步驟。將對話歷史儲存在 Amazon ElastiCache (Redis OSS) 叢集中。設定 encryption at rest。"
+  }
  },
  {
   "num": 45,
@@ -645,7 +962,14 @@
   "answers": [
    "B"
   ],
-  "explain": "資料品質驗證 + 可稽核 metadata + 監控 + 自訂分塊 + 最少開發 → Glue crawler(編目)+ ETL(轉換/分塊)+ Glue Data Quality(驗證/監控)。SageMaker Model Monitor(D)是模型監控非資料品質。"
+  "explain": "資料品質驗證 + 可稽核 metadata + 監控 + 自訂分塊 + 最少開發 → Glue crawler(編目)+ ETL(轉換/分塊)+ Glue Data Quality(驗證/監控)。SageMaker Model Monitor(D)是模型監控非資料品質。",
+  "stem_zh": "某金融服務公司需要前處理非結構化資料，例如客戶逐字稿、財務報告與文件。該公司將非結構化資料儲存在 Amazon S3 中，以支援一個 Amazon Bedrock 應用程式。該公司必須驗證資料品質、建立可稽核的 metadata、監控資料 metrics，並自訂文字 chunking 以最佳化 foundation model (FM) 的效能。哪個解決方案能以最少的開發工作量滿足這些需求？",
+  "options_zh": {
+   "A": "使用 Amazon SageMaker Data Wrangler 建立 data flow。設定 Amazon CloudWatch metrics 與 alarms 以監控資料品質。使用自訂的 AWS Lambda function 前處理資料。將處理後的資料載入 Amazon Bedrock。",
+   "B": "設定 AWS Glue crawler 以編目資料來源。建立 AWS Glue ETL jobs 以執行自訂的轉換腳本。使用 AWS Glue Data Quality 來驗證與監控資料品質。將處理後的資料載入 Amazon Bedrock。",
+   "C": "使用 Amazon Comprehend 擷取實體。建立一個 AWS Lambda function 來切割文字。執行 Amazon Athena 以查詢並驗證資料品質。將處理後的資料載入 Amazon Bedrock。",
+   "D": "建立一個 AWS Step Functions workflow 以協調資料前處理任務。在 Amazon EC2 執行個體上執行自訂程式碼以處理資料。使用 Amazon SageMaker Model Monitor 監控資料品質。將處理後的資料載入 Amazon Bedrock。"
+  }
  },
  {
   "num": 46,
@@ -659,7 +983,14 @@
   "answers": [
    "C"
   ],
-  "explain": "評估太多文件/類型/時間 + 最少改動 → 在現有 Bedrock Knowledge Base 啟用 metadata-aware filtering(索引 S3 object metadata 縮小範圍)。遷移 OpenSearch(B)/Q Business(D)改動大;domain 模型(A)題目已排除 fine-tune。"
+  "explain": "評估太多文件/類型/時間 + 最少改動 → 在現有 Bedrock Knowledge Base 啟用 metadata-aware filtering(索引 S3 object metadata 縮小範圍)。遷移 OpenSearch(B)/Q Business(D)改動大;domain 模型(A)題目已排除 fine-tune。",
+  "stem_zh": "某公司使用 Amazon Bedrock 建置一個檢索增強生成 (Retrieval Augmented Generation, RAG) 系統。該 RAG 系統使用一個以 Amazon S3 儲存貯體為基礎的 Amazon Bedrock knowledge base 作為緊急新聞影片內容的資料來源。該系統從該 S3 儲存貯體檢索逐字稿、封存報告與相關文件。該 RAG 系統使用最先進的 embedding 模型與高效能的檢索設定。然而，使用者回報回應緩慢且結果不相關，導致使用者滿意度下降。該公司注意到 vector searches 正在跨越過多的內容類型、橫跨很長的時間區間，並評估過多的文件。該公司判定底層模型無法從額外的 fine tuning 中獲益。該公司必須透過套用更聰明的限制條件來改善檢索準確度。該公司希望解決方案對現有架構的變動最小。哪個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "使用專門針對緊急新聞內容訓練的領域適應模型來強化 embeddings，以改善 vector 相似度。",
+   "B": "遷移至 Amazon OpenSearch Service。使用 vector fields 與 metadata filters 來定義結果檢索的範圍。",
+   "C": "透過為 S3 物件 metadata 建立索引，在 Amazon Bedrock knowledge base 中啟用 metadata 感知的篩選。",
+   "D": "遷移至 Amazon Q Business 索引，以在檢索期間執行結構化的 metadata 篩選與文件分類。"
+  }
  },
  {
   "num": 47,
@@ -673,7 +1004,14 @@
   "answers": [
    "A"
   ],
-  "explain": "小型資料集 + 低索引數 + 最大準確 → Flat 演算法(精確最近鄰,小資料最準)。HNSW/IVFFlat(B、C、D)是近似 ANN,適合大規模但犧牲精確度。"
+  "explain": "小型資料集 + 低索引數 + 最大準確 → Flat 演算法(精確最近鄰,小資料最準)。HNSW/IVFFlat(B、C、D)是近似 ANN,適合大規模但犧牲精確度。",
+  "stem_zh": "某金融服務公司正在建立一個檢索增強生成 (Retrieval Augmented Generation, RAG) 應用程式，該程式使用 Amazon Bedrock 來產生市場活動摘要。該應用程式依賴一個 vector database，其中儲存了一個索引數量偏低的小型專有資料集。該應用程式必須執行相似度搜尋。Amazon Bedrock 模型的回應必須將準確度最大化並維持高效能。該公司需要設定該 vector database 並將其與應用程式整合。哪個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "啟動一個 Amazon MemoryDB 叢集，並使用 Flat 演算法設定索引。根據效能 metrics 設定水平擴展政策。",
+   "B": "啟動一個 Amazon MemoryDB 叢集，並使用 Hierarchical Navigable Small World (HNSW) 演算法設定索引。根據效能 metrics 設定垂直擴展政策。",
+   "C": "啟動一個 Amazon Aurora PostgreSQL 叢集，並使用 Inverted File with Flat Compression (IVFFlat) 演算法設定索引。設定執行個體類別以在負載增加時擴展至更大的規模。",
+   "D": "啟動一個具有 Inverted File with Flat Compression (IVFFlat) 索引與高 probe 值的 Amazon DocumentDB 叢集。將與叢集的連線設定為 replica set，並將讀取分散到 replica 執行個體。"
+  }
  },
  {
   "num": 48,
@@ -687,7 +1025,14 @@
   "answers": [
    "D"
   ],
-  "explain": "去 PII + 嵌入 + <4h + 最少負擔 → Step Functions 編排 + Comprehend(PII)+ Bedrock(嵌入)+ OpenSearch Serverless(向量+相似度,免管)。EMR(C)/SageMaker 自跑 HuggingFace(B)負擔高。"
+  "explain": "去 PII + 嵌入 + <4h + 最少負擔 → Step Functions 編排 + Comprehend(PII)+ Bedrock(嵌入)+ OpenSearch Serverless(向量+相似度,免管)。EMR(C)/SageMaker 自跑 HuggingFace(B)負擔高。",
+  "stem_zh": "一位 GenAI 開發人員正在建置一個以檢索增強生成 (Retrieval Augmented Generation, RAG) 為基礎的客戶支援應用程式，該程式使用 Amazon Bedrock foundation models (FMs)。該應用程式需要處理儲存在 Amazon S3 儲存貯體中、以 JSON 檔案形式存在的 50 GB 歷史客戶對話。該應用程式必須將處理後的資料作為其檢索語料庫。該應用程式的資料處理工作流程必須從客戶支援文件中擷取相關資料、移除客戶的個人識別資訊 (PII)，並產生用於 vector 儲存的 embeddings。此處理工作流程必須具成本效益，且必須在 4 小時內完成。哪個解決方案能以最少的營運負擔滿足這些需求？",
+  "options_zh": {
+   "A": "使用 AWS Lambda 與 Amazon Comprehend 平行處理檔案、移除 PII，並呼叫 Amazon Bedrock API 來產生 vectors。設定 Lambda concurrency 限制與記憶體設定以最佳化吞吐量。",
+   "B": "建立一個 AWS Glue ETL job 在資料上執行 PII 偵測腳本。使用 Amazon SageMaker Processing 執行 HuggingFaceProcessor，透過預先訓練的模型產生 embeddings。將 embeddings 儲存在 Amazon OpenSearch Service 中。",
+   "C": "部署一個執行 Apache Spark 的 Amazon EMR 叢集，並使用呼叫 Amazon Comprehend 來偵測 PII 的使用者自訂函式 (UDFs)。使用 Amazon Bedrock API 產生 vectors。將輸出儲存在具有 pgvector 擴充功能的 Amazon Aurora PostgreSQL 中。",
+   "D": "實作一個資料處理管線，使用 AWS Step Functions 來協調一個使用 Amazon Comprehend 偵測 PII 與使用 Amazon Bedrock 產生 embeddings 的工作負載。將此工作流程直接與 Amazon OpenSearch Serverless 整合，以儲存 vectors 並提供相似度搜尋功能。"
+  }
  },
  {
   "num": 49,
@@ -701,7 +1046,14 @@
   "answers": [
    "C"
   ],
-  "explain": "動態切模型 + A/B 測試不重部署 + 驗證參數 + 最少負擔 → AWS AppConfig(動態配置)+ feature flags(A/B)+ JSON schema 驗證 + AppConfig Agent。Parameter Store(A)需重部署;DynamoDB/ElastiCache(B、D)缺驗證/feature flag。"
+  "explain": "動態切模型 + A/B 測試不重部署 + 驗證參數 + 最少負擔 → AWS AppConfig(動態配置)+ feature flags(A/B)+ JSON schema 驗證 + AppConfig Agent。Parameter Store(A)需重部署;DynamoDB/ElastiCache(B、D)缺驗證/feature flag。",
+  "stem_zh": "某金融服務公司正在開發一個同時服務高級客戶與一般客戶的生成式 AI (GenAI) 應用程式。該應用程式使用位於 Amazon API Gateway REST API 後方的 AWS Lambda functions 來處理請求。該公司需要根據每位使用者所屬的客戶層級，動態切換 AI 模型。該公司也希望在不重新部署程式碼的情況下執行 A/B 測試以測試新功能。該公司需要在套用變更前驗證模型參數，例如 temperature 與最大 token 限制。哪個解決方案能以最少的營運負擔滿足這些需求？",
+  "options_zh": {
+   "A": "為每個組態建立 AWS Systems Manager Parameter Store 參數。使用 Lambda functions 輪詢參數更新。使用 Amazon EventBridge 事件在組態變更時觸發重新部署。",
+   "B": "將模型組態儲存在 Amazon DynamoDB 資料表中。最佳化存取模式以根據客戶層級檢索組態。設定 Lambda functions 在每次請求開始時查詢 DynamoDB 以決定使用哪個模型。",
+   "C": "使用 AWS AppConfig 管理模型組態。使用 feature flags 執行 A/B 測試。為模型參數定義 JSON schema 驗證規則。設定 Lambda functions 使用 AWS AppConfig Agent 來檢索組態。",
+   "D": "建立一個 Amazon ElastiCache (Redis OSS) 叢集來儲存模型組態。設定較短的 TTL 值。在 Lambda functions 中執行自訂驗證邏輯。使用 Amazon CloudWatch metrics 監控組態使用情況。"
+  }
  },
  {
   "num": 50,
@@ -715,7 +1067,14 @@
   "answers": [
    "B"
   ],
-  "explain": "激增 + <2s + 多區域 + 吞吐瓶頸 → token batching(降 API 開銷)+ cross-Region inference profiles(自動跨區分散流量)。單區 provisioned(A)不解決跨區;batch inference(D)非即時。"
+  "explain": "激增 + <2s + 多區域 + 吞吐瓶頸 → token batching(降 API 開銷)+ cross-Region inference profiles(自動跨區分散流量)。單區 provisioned(A)不解決跨區;batch inference(D)非即時。",
+  "stem_zh": "某公司正使用 Amazon Bedrock 與 Anthropic Claude 3 Haiku 開發一個 AI 助理。該 AI 助理一般每小時處理 10,000 筆請求，但在尖峰使用期間會經歷高達每小時 30,000 筆請求的激增。該 AI 助理必須在跨多個 AWS Region 運作的同時於 2 秒內回應。該公司觀察到，在尖峰使用期間，該 AI 助理會出現吞吐量瓶頸，導致延遲增加與偶發的請求逾時。該公司必須解決這些效能問題。哪個解決方案能滿足此需求？",
+  "options_zh": {
+   "A": "在單一 Region 購買 provisioned throughput 與足夠的 model units (MUs)。設定應用程式以使用 exponential backoff 重試失敗的請求。",
+   "B": "實作 token batching 以減少 API 額外負擔。使用 cross-Region inference profiles 在可用的 Region 之間自動分散流量。",
+   "C": "在每個 Region 設定 auto scaling 的 AWS Lambda functions。實作用戶端 round-robin 請求分配。購買一個 model unit (MU) 的 provisioned throughput 作為備援。",
+   "D": "使用跨多個 Region 的 Amazon S3 儲存貯體，對所有請求實作 batch inference。使用 Amazon SQS 設定非同步的檢索流程。"
+  }
  },
  {
   "num": 51,
@@ -729,7 +1088,14 @@
   "answers": [
    "C"
   ],
-  "explain": "不同措辭同義(語意等價快取)→ OpenSearch k-NN 存 query-response 對,用近似 k-NN 找語意相似。LIKE(A)/stemming(D)是字面比對,抓不到語意等價。"
+  "explain": "不同措辭同義(語意等價快取)→ OpenSearch k-NN 存 query-response 對,用近似 k-NN 找語意相似。LIKE(A)/stemming(D)是字面比對,抓不到語意等價。",
+  "stem_zh": "某公司使用 Amazon Bedrock 開發一個提供客戶支援的 AI 助理。分析顯示，40% 的客戶查詢使用不同的措辭或字眼來詢問相同的問題。該公司希望有一個解決方案來減少多餘的模型呼叫。該解決方案必須確保語意相同的問題得到一致的答案。該解決方案必須確保低延遲。哪個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "部署一個 Amazon DynamoDB Accelerator (DAX) 叢集作為記憶體內快取。將查詢文字指定為 partition key，並將模型回應文字指定為 sort key。使用搭配 LIKE 運算子的 filter expression 來查詢快取。",
+   "B": "使用 Amazon Bedrock 從客戶查詢產生 embeddings。使用 Amazon MemoryDB for Valkey 儲存 vector embeddings 與模型回應的 hash set。使用 RANGE 查詢來尋找相似的查詢及其回應。",
+   "C": "部署具有 k-nearest neighbor (k-NN) 功能的 Amazon OpenSearch Service 來儲存查詢與回應的文字配對。使用 approximate k-NN 技術來尋找相似的查詢及其回應。",
+   "D": "使用 Amazon DynamoDB 建立快取解決方案，在正規化後的查詢文字上建立 global secondary index。對傳入的查詢套用 stemming。查詢已快取的客戶查詢索引。"
+  }
  },
  {
   "num": 52,
@@ -743,7 +1109,14 @@
   "answers": [
    "C"
   ],
-  "explain": "MCP server on Lambda + 只授權使用者 → API Gateway HTTP API proxy + Streamable HTTP transport + Cognito OAuth 2.1(嚴格使用者授權)。STDIO transport(B、D)用於本地;非遠端授權。"
+  "explain": "MCP server on Lambda + 只授權使用者 → API Gateway HTTP API proxy + Streamable HTTP transport + Cognito OAuth 2.1(嚴格使用者授權)。STDIO transport(B、D)用於本地;非遠端授權。",
+  "stem_zh": "某公司使用 AWS Lambda functions 建置一個 AI agent 解決方案。一位 GenAI 開發人員必須設定一個可存取使用者資訊的 Model Context Protocol (MCP) server。該 GenAI 開發人員也必須設定該 AI agent 使用這個新的 MCP server。該 GenAI 開發人員必須確保只有經授權的使用者能存取該 MCP server。哪個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "使用一個 Lambda function 來託管該 MCP server。授予 AI agent 的 Lambda functions 呼叫託管 MCP server 之 Lambda function 的權限。設定 AI agent 的 MCP client 以非同步方式呼叫該 MCP server。",
+   "B": "使用一個 Lambda function 來託管該 MCP server。授予 AI agent 的 Lambda functions 呼叫託管 MCP server 之 Lambda function 的權限。設定 AI agent 使用 STDIO transport 與該 MCP server 通訊。",
+   "C": "使用一個 Lambda function 來託管該 MCP server。建立一個將請求代理至該 Lambda function 的 Amazon API Gateway HTTP API。設定該 AI agent 解決方案使用 Streamable HTTP transport，透過該 HTTP API 發出請求。使用 Amazon Cognito 來強制執行 OAuth 2.1。",
+   "D": "使用一個 Lambda layer 來託管該 MCP server。將該 Lambda layer 加入 AI agent 的 Lambda functions。設定該 agentic AI 解決方案使用 STDIO transport 向該 MCP server 傳送請求。在 AI agent 的 MCP 組態中，將該 Lambda layer ARN 指定為 command。將使用者憑證指定為環境變數。"
+  }
  },
  {
   "num": 53,
@@ -757,7 +1130,14 @@
   "answers": [
    "B"
   ],
-  "explain": "三 agent 依序 + 獎勵 Lambda + 優雅降級 + 最有效率 → Step Functions 四 task(三 agent + 獎勵 Lambda)+ 每步 retry/catch 分支(優雅降級)。自建 Lambda 編排(A、C、D)需自管重試,效率較低。"
+  "explain": "三 agent 依序 + 獎勵 Lambda + 優雅降級 + 最有效率 → Step Functions 四 task(三 agent + 獎勵 Lambda)+ 每步 retry/catch 分支(優雅降級)。自建 Lambda 編排(A、C、D)需自管重試,效率較低。",
+  "stem_zh": "某公司想為其客戶建立一個年度獎勵計畫。客戶賺取的獎勵會根據不同參數而有所不同，例如所訂購商品的類別與客戶的購買歷史。該公司需要一個生成式 AI (GenAI) 解決方案，使用三個 Amazon Bedrock agents 在線上型錄瀏覽過程中協助客戶。這些 agents 必須使用 knowledge bases 與 action groups 來處理搜尋、推薦與訂單模組。這些模組必須循序運作。一個 AWS Lambda function 必須為每個被推薦的商品計算預估獎勵。該解決方案必須在服務中斷期間提供優雅降級 (graceful degradation)。哪個解決方案能以最高的營運效率滿足這些需求？",
+  "options_zh": {
+   "A": "在每個 agent 後方定義一個 Amazon API Gateway REST API。建立第二個 Lambda function 來協調對這些 agents 與獎勵 Lambda function 的呼叫。為第二個 Lambda function 設定重試/備援機制。",
+   "B": "建立一個含有四個任務的 AWS Step Functions state machine，用以執行這些 agents 與獎勵 Lambda function。為每個任務步驟設定 retry 與 catch 分支。",
+   "C": "為每個 agent 設定各自獨立的重試/備援機制。建立第二個 Lambda function 來協調對這些 agents 與獎勵 Lambda function 的呼叫。在第二個 Lambda function 後方定義一個 Amazon API Gateway REST API。",
+   "D": "建立第二個 Lambda function 來協調對這些 agents 與獎勵 Lambda function 的呼叫。建立一個含有單一任務的 AWS Step Functions state machine 來執行第二個 Lambda function。為該任務步驟設定 retry 與 catch 分支。"
+  }
  },
  {
   "num": 54,
@@ -771,7 +1151,14 @@
   "answers": [
    "B"
   ],
-  "explain": "確定性線性流程(S3 取→解析→model→S3 存)→ Step Functions(S3 GetObject + intrinsic Pass 解析 + InvokeModel + PutObject)。agent(C、D)對確定性流程是過度設計。"
+  "explain": "確定性線性流程(S3 取→解析→model→S3 存)→ Step Functions(S3 GetObject + intrinsic Pass 解析 + InvokeModel + PutObject)。agent(C、D)對確定性流程是過度設計。",
+  "stem_zh": "某公司正在建立一個工作流程，以在公司寄送面向客戶的通訊內容之前先行審查。該公司使用預先定義的訊息範本來產生通訊內容，並將通訊內容儲存在 Amazon S3 儲存貯體中。此工作流程需要從範本中擷取特定部分，並將其傳送給一個 Amazon Bedrock 模型。此工作流程必須將模型回應儲存回原本的 S3 儲存貯體。哪個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "在 Amazon Bedrock Flows 中建立一個 flow。在 flow 的開頭與結尾設定 S3 action nodes，以檢索並儲存通訊內容與模型回應。在 flow 中間設定一個 expression 來剖析每筆通訊內容。設定一個 agent step，將剖析後的輸入傳送給模型進行審查。",
+   "B": "建立一個 AWS Step Functions Express workflow state machine。使用 Amazon S3 整合的 GetObject 步驟來檢索原本的通訊內容。使用 intrinsic function 的 Pass 步驟來剖析通訊內容，並將結果傳遞給 Amazon Bedrock InvokeModel 步驟。設定一個 Amazon S3 整合的 PutObject 步驟，將模型回應儲存回該 S3 儲存貯體。",
+   "C": "建立一個具有 action group 的 Amazon Bedrock agent。設定指示來定義該 agent 應如何剖析通訊內容。設定該 action group 以從 S3 儲存貯體檢索通訊內容、呼叫 Amazon Bedrock 模型，並將模型回應儲存回該 S3 儲存貯體。",
+   "D": "建立一個具有單一 action group 的 Amazon Bedrock agent。在該 action group 中設定三個 AWS Lambda functions。設定這些 functions 以從 S3 儲存貯體檢索通訊內容、剖析通訊內容並呼叫 Amazon Bedrock 模型，以及將模型回應儲存回該 S3 儲存貯體。"
+  }
  },
  {
   "num": 55,
@@ -785,7 +1172,14 @@
   "answers": [
    "B"
   ],
-  "explain": "大規模自動評估 + 關鍵互動人工審 → Bedrock evaluations judge model(自動評準確/得體)+ Guardrails(合規)+ A2I(關鍵互動人工審)。全人工(A)不可規模化;CloudWatch(D)不評內容品質。"
+  "explain": "大規模自動評估 + 關鍵互動人工審 → Bedrock evaluations judge model(自動評準確/得體)+ Guardrails(合規)+ A2I(關鍵互動人工審)。全人工(A)不可規模化;CloudWatch(D)不評內容品質。",
+  "stem_zh": "某金融科技公司正使用 Amazon Bedrock 為公司的客戶服務 AI 助理建置一個評估系統。該 AI 助理必須提供事實準確、符合金融法規且對話得當的財務建議。該公司需要將大規模的自動化品質評估與針對關鍵互動的目標性人工審查相結合。哪個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "設定一個管線，由財務專家手動為所有回應的準確度、合規性與對話品質評分。使用 Amazon SageMaker notebooks 分析結果以找出可改善之處。",
+   "B": "設定使用 Anthropic Claude Sonnet 作為評審模型的 Amazon Bedrock evaluations，以評估回應的準確度與得當性。設定自訂的 Amazon Bedrock guardrails 以檢查回應是否符合金融政策。為被標記的關鍵互動加入 Amazon Augmented AI (Amazon A2I) 人工審查。",
+   "C": "建立一個 Amazon Lex bot 來管理客戶服務互動。設定 AWS Lambda functions 以對照靜態合規資料庫檢查回應。在該 bot 中設定呼叫這些 Lambda functions 來檢查回應的 intents。額外加入一個 intent 來收集終端使用者的評論。",
+   "D": "設定 Amazon CloudWatch 以監控該 AI 助理的回應模式。設定 CloudWatch 警示以偵測潛在的合規違規。建立一支人工評估團隊來審查被標記的互動。"
+  }
  },
  {
   "num": 56,
@@ -799,7 +1193,14 @@
   "answers": [
    "A"
   ],
-  "explain": "多代理 + 領域特定 + 可擴展 + 並行 → supervisor agent(意圖分類路由)+ 專門 collaborator agents(各自獨立 KB + RAG)+ IAM 隔離。手動交接(B)不可規模化;單一通用 agent(C)非多代理;共用 KB(D)無隔離。"
+  "explain": "多代理 + 領域特定 + 可擴展 + 並行 → supervisor agent(意圖分類路由)+ 專門 collaborator agents(各自獨立 KB + RAG)+ IAM 隔離。手動交接(B)不可規模化;單一通用 agent(C)非多代理;共用 KB(D)無隔離。",
+  "stem_zh": "某醫療保健公司正使用 Amazon Bedrock 開發一個即時病患照護 AI 助理，以回應由不同部門處理的查詢，這些部門分別處理臨床諮詢、保險查驗、預約排程與保險理賠。該公司想使用多 agent 架構。該公司必須確保該 AI 助理具可擴展性，並能為病患導入新功能。該 AI 助理必須能夠處理數千個平行的病患互動。該公司必須確保病患的查詢能獲得適當的領域專屬回應。哪個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "使用各自獨立的 knowledge bases 隔離每個 agent 的資料。使用 IAM 篩選來控制對每個 knowledge base 的存取。部署一個 supervisor agent 對病患詢問執行自然語言意圖分類。設定該 supervisor agent 將查詢路由至專門的 collaborator agents，以回應部門專屬的查詢。設定每個專門的 collaborator agent 使用檢索增強生成 (RAG) 搭配該 agent 的部門專屬 knowledge base。",
+   "B": "為每個部門建立各自獨立的 supervisor agent。設定個別的 collaborator agents 為每個部門內的每個專業領域執行自然語言意圖分類。將每個 collaborator agent 僅與部門專屬的 knowledge bases 整合。在這些 supervisor agents 之間實作人工交接流程。",
+   "C": "在各自獨立的 knowledge bases 中隔離每個部門的資料。使用 IAM 篩選來控制對每個 knowledge base 的存取。部署單一通用型 agent。在該通用型 agent 中設定多個 action groups 以執行特定的部門功能。在該通用型 agent 的指示中實作以規則為基礎的路由邏輯。",
+   "D": "實作多個平行執行的獨立 supervisor agents，以回應每個部門的病患詢問。為每個 supervisor agent 設定多個 collaborator agents。將所有 agents 與同一個 knowledge base 整合。使用外部路由邏輯來合併來自多個 supervisor agents 的回應。"
+  }
  },
  {
   "num": 57,
@@ -813,7 +1214,14 @@
   "answers": [
    "C"
   ],
-  "explain": "多環境 + 輕鬆切換 FM 測試 → 單一 CDK app + 每環境部署階段 + fromFoundationModelId()(模型 ID 易切換)。fromProvisionedModelArn(A、D)是固定 provisioned,切換麻煩;手動重建(D)易錯。"
+  "explain": "多環境 + 輕鬆切換 FM 測試 → 單一 CDK app + 每環境部署階段 + fromFoundationModelId()(模型 ID 易切換)。fromProvisionedModelArn(A、D)是固定 provisioned,切換麻煩;手動重建(D)易錯。",
+  "stem_zh": "某公司使用一個 AI 助理應用程式來摘要公司網站內容並向客戶提供資訊。該公司計畫使用 Amazon Bedrock 讓該應用程式能存取一個 foundation model (FM)。該公司需要將此 AI 助理應用程式部署至一個開發環境與一個生產環境。該解決方案必須將這些環境與該 FM 整合。該公司想在每個環境中測試各種 FM 的成效。該解決方案必須讓產品負責人能夠在每個環境中輕鬆切換 FM 以進行測試。哪個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "建立一個 AWS CDK 應用程式。在 AWS CodePipeline 中建立多個管線。設定每個管線針對每個 FM 擁有各自的設定。設定該應用程式使用 aws_bedrock.ProvisionedModel.fromProvisionedModelArn() 方法呼叫 Amazon Bedrock FMs。",
+   "B": "為每個環境建立各自獨立的 AWS CDK 應用程式。設定這些應用程式使用 aws_bedrock.FoundationModel.fromFoundationModelId() 方法呼叫 Amazon Bedrock FMs。在 AWS CodePipeline 中為每個環境建立各自獨立的管線。",
+   "C": "建立一個 AWS CDK 應用程式。設定該應用程式使用 aws_bedrock.FoundationModel.fromFoundationModelId() 方法呼叫 Amazon Bedrock FMs。在 AWS CodePipeline 中建立一個管線，其中為每個環境設定一個使用 AWS CodeBuild deploy actions 的部署階段。",
+   "D": "為生產環境建立一個 AWS CDK 應用程式。設定該應用程式使用 aws_bedrock.ProvisionedModel.fromProvisionedModelArn() 方法呼叫 Amazon Bedrock FMs。在 AWS CodePipeline 中建立一個管線。設定該管線使用 AWS CodeBuild deploy action 部署至生產環境。對於開發環境，則參照生產應用程式的程式碼手動重新建立資源。"
+  }
  },
  {
   "num": 58,
@@ -827,7 +1235,14 @@
   "answers": [
    "C"
   ],
-  "explain": "每飯店獨立存取控制 + 近即時 + 尖峰一致效能 → 多帳號 + 每飯店獨立 KB(強隔離 + 效能隔離)+ 直接即時擷取。單一/集中 KB(A、B、D)隔離與效能隔離較弱。"
+  "explain": "每飯店獨立存取控制 + 近即時 + 尖峰一致效能 → 多帳號 + 每飯店獨立 KB(強隔離 + 效能隔離)+ 直接即時擷取。單一/集中 KB(A、B、D)隔離與效能隔離較弱。",
+  "stem_zh": "某飯店公司想透過加入 AI 功能來強化一個以 Java 為基礎的舊有物業管理系統 (property management system, PMS)。該公司想使用 Amazon Bedrock Knowledge Bases 為員工提供房間空房資訊與飯店專屬細節。該解決方案必須為公司所管理的每間飯店維持各自獨立的存取控制。該解決方案必須以近乎即時的方式提供房間空房資訊，並必須在尖峰使用期間維持一致的效能。哪個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "部署單一個包含所有飯店合併資料的 Amazon Bedrock knowledge base。設定 AWS Lambda functions 透過直接的 API 連線從每間飯店的 PMS 資料庫同步資料。實作具有飯店專屬篩選器的 AWS CloudTrail logging，以稽核每間飯店資料的存取日誌。",
+   "B": "為每間飯店建立一個 Amazon EventBridge rule，由每間飯店的 PMS 資料庫變更所觸發。設定該 rule 將更新傳送至位於管理 AWS 帳戶中的集中式 Amazon Bedrock knowledge base。設定 resource-based policies 以為飯店員工強制執行飯店專屬的存取控制。",
+   "C": "在多帳戶結構中為每間飯店實作一個 Amazon Bedrock knowledge base。使用直接資料擷取來提供即時房間空房資訊。為較不關鍵的資訊排程定期同步。",
+   "D": "建置一個使用多個 knowledge bases 的集中式 Amazon Bedrock agent。實作 AWS IAM Identity Center 並使用飯店專屬的 permission sets 來控制飯店員工的資料存取。"
+  }
  },
  {
   "num": 59,
@@ -841,7 +1256,14 @@
   "answers": [
    "B"
   ],
-  "explain": "不重部署切換 + 安全推出 + 驗證 + 回滾 → AWS AppConfig(一站涵蓋:動態配置+漸進推出+驗證+自動回滾)。Parameter Store(A)缺安全推出/驗證/回滾;繞 S3(D)多餘複雜。"
+  "explain": "不重部署切換 + 安全推出 + 驗證 + 回滾 → AWS AppConfig(一站涵蓋:動態配置+漸進推出+驗證+自動回滾)。Parameter Store(A)缺安全推出/驗證/回滾;繞 S3(D)多餘複雜。",
+  "stem_zh": "某公司正使用 AWS Lambda 實作一個無伺服器 inference API。該 API 將動態呼叫多個託管於 Amazon Bedrock 上的 AI 模型。該公司需要設計一個解決方案，能夠即時在不同模型供應商之間切換，而無需修改或重新部署 Lambda 程式碼。此設計必須包含組態變更的安全推出，以及驗證與回復 (rollback) 功能。哪個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "將使用中的模型供應商儲存在 AWS Systems Manager Parameter Store 中。設定一個 Lambda function 在執行階段讀取該參數，以決定要呼叫哪個模型。",
+   "B": "將使用中的模型供應商儲存在 AWS AppConfig 中。設定一個 Lambda function 在執行階段讀取該組態，以決定要呼叫哪個模型。",
+   "C": "設定一個 Amazon API Gateway REST API 將請求路由至各自獨立的 Lambda functions。將每個 Lambda function 硬編碼至特定的模型供應商。手動切換整合目標。",
+   "D": "將使用中的模型供應商儲存在一個託管於 Amazon S3 的 JSON 檔案中。使用 AWS AppConfig 將該 S3 檔案參照為 hosted configuration source。設定一個 Lambda function 在執行階段透過 AppConfig 讀取該檔案，以決定要呼叫哪個模型。"
+  }
  },
  {
   "num": 60,
@@ -855,7 +1277,14 @@
   "answers": [
    "B"
   ],
-  "explain": "處理暫時錯誤 + 防壓垮 + 自適應 + 串流 + token 感知 → 指數退避+jitter + circuit breaker(自適應)+ 串流從中斷點智慧恢復。固定延遲(A)不防壓垮;全域 token 上限(C)非 token-aware;靜態上限(D)矛盾。"
+  "explain": "處理暫時錯誤 + 防壓垮 + 自適應 + 串流 + token 感知 → 指數退避+jitter + circuit breaker(自適應)+ 串流從中斷點智慧恢復。固定延遲(A)不防壓垮;全域 token 上限(C)非 token-aware;靜態上限(D)矛盾。",
+  "stem_zh": "某公司正在建置一個使用 Amazon Bedrock API 處理複雜客戶詢問的生成式 AI (GenAI) 應用程式。在尖峰使用期間，該應用程式會經歷間歇性的 API 逾時，導致諸如回應 chunk 中斷與資料傳遞延遲等問題。在處理長度不一的複雜客戶詢問時，該應用程式難以確保 prompts 維持在 token 限制範圍內。使用者已回報輸入被截斷與回應不完整。該公司也觀察到 foundation model (FM) 的呼叫失敗。該公司需要一個重試策略，能自動處理暫時性的服務錯誤，並防止在尖峰使用期間使 Amazon Bedrock 不堪負荷。此策略還必須能適應服務可用性的變化，並支援回應串流與具 token 感知能力的請求處理。哪個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "實作一個標準重試策略，在各次嘗試之間使用固定的 1 秒延遲，並對所有錯誤設定最多重試 3 次。透過重新啟動串流來處理串流回應逾時。為每個 session 設定 token 使用量上限。",
+   "B": "實作一個自適應重試策略，使用搭配 jitter 的 exponential backoff，以及一個在錯誤率超過預先定義的閾值時暫時停用重試的斷路器 (circuit breaker) 模式。實作一個監控 chunk 傳遞逾時的串流回應處理器。設定該處理器以緩衝已成功接收的 chunk，並在連線重新建立時，從最後接收到的 chunk 智慧地恢復串流。",
+   "C": "使用 AWS SDK 將重試策略設定為 standard 模式。將 Amazon Bedrock API 呼叫包在處理逾時例外的 try-catch 區塊中。針對失敗的串流請求回傳已快取的完成內容。為所有使用者強制執行全域 token 限制。為每個請求加入以 jitter 為基礎的重試邏輯與輕量的 token 修剪。透過僅從失敗點請求遺漏的 chunk 來恢復中斷的串流。維護一個包含最近期 chunk 的小型記憶體內緩衝區，以將多餘的資料傳輸降到最低。",
+   "D": "將 Amazon Bedrock client 的請求逾時設定為 30 秒。實作用戶端 load shedding。緩衝部分結果，並在應用程式效能開始下降時停止新的請求。為所有請求設定靜態的 token 使用量上限。設定 exponential backoff 重試、動態 chunk 大小調整與具 context 感知能力的 token 限制。"
+  }
  },
  {
   "num": 61,
@@ -869,7 +1298,14 @@
   "answers": [
    "C"
   ],
-  "explain": "不洩漏/不送 PII + 封鎖投資建議 + 稽核含圖片 + 最少負擔 → Guardrails 敏感資訊政策(PII)+ 主題政策(投資建議)+ Converse API + 圖片日誌到 S3。Macie(A)是 S3 靜態資料;Comprehend topic modeling(B)是發現主題非封鎖。"
+  "explain": "不洩漏/不送 PII + 封鎖投資建議 + 稽核含圖片 + 最少負擔 → Guardrails 敏感資訊政策(PII)+ 主題政策(投資建議)+ Converse API + 圖片日誌到 S3。Macie(A)是 S3 靜態資料;Comprehend topic modeling(B)是發現主題非封鎖。",
+  "stem_zh": "某銀行正在開發一個由生成式 AI (GenAI) 驅動、使用 Amazon Bedrock 的 AI 助理，協助該銀行網站使用者處理帳戶查詢與財務指引。該銀行必須確保此 AI 助理在客戶互動過程中不會洩漏任何個人識別資訊 (PII)。此 AI 助理不可在送往 GenAI 模型的 prompt 中包含 PII。此 AI 助理不可回應客戶提供投資建議的要求。該銀行必須蒐集所有客戶互動的稽核日誌，包括客戶互動過程中傳輸的任何圖片或文件。哪一個解決方案能以最少的營運投入滿足這些需求？",
+  "options_zh": {
+   "A": "使用 Amazon Macie 偵測並遮蔽使用者輸入及模型回應中的 PII。套用 prompt engineering 技巧強制模型避開投資建議主題。使用 AWS CloudTrail 擷取對話日誌。",
+   "B": "使用一個 AWS Lambda 函數搭配 Amazon Comprehend 偵測並遮蔽 PII。使用 Amazon Comprehend 主題建模 (topic modeling) 防止 AI 助理討論投資建議主題。在 Amazon CloudWatch 中設定自訂 metrics 以擷取客戶對話。",
+   "C": "設定 Amazon Bedrock guardrails，套用敏感資訊政策 (sensitive information policy) 來偵測並過濾 PII。設定主題政策 (topic policy) 以確保 AI 助理避開投資建議主題。使用 Converse API 記錄模型呼叫。啟用傳遞記錄與圖片記錄至 Amazon S3。",
+   "D": "使用 regex 控制來比對 PII 的模式。套用 prompt engineering 技巧以避免向客戶回傳 PII 或投資建議主題。啟用模型呼叫記錄、傳遞記錄及圖片記錄至 Amazon S3。"
+  }
  },
  {
   "num": 62,
@@ -883,7 +1319,14 @@
   "answers": [
    "A"
   ],
-  "explain": "記錄推理 + 引用 RAG 來源 + 稽核 + 高並發低延遲 + 最少負擔 → agent tracing(推理+稽核)+ Knowledge Bases RAG(內建引用)+ Multi-AZ/API GW/Lambda/CloudFront。自建 RAG+CloudTrail(B)負擔高且 CloudTrail 非回應稽核。"
+  "explain": "記錄推理 + 引用 RAG 來源 + 稽核 + 高並發低延遲 + 最少負擔 → agent tracing(推理+稽核)+ Knowledge Bases RAG(內建引用)+ Multi-AZ/API GW/Lambda/CloudFront。自建 RAG+CloudTrail(B)負擔高且 CloudTrail 非回應稽核。",
+  "stem_zh": "某金融服務公司正在開發一個客戶服務 AI 助理應用程式，該應用程式使用 Amazon Bedrock 中的 foundation model (FM)。此應用程式必須提供透明的回應，方式是記錄推理過程並引用 Retrieval Augmented Generation (RAG) 所使用的來源。此應用程式必須為所有給使用者的回應擷取完整的稽核軌跡 (audit trail)。此應用程式必須能夠服務多達 10,000 名並行使用者，且必須在 2 秒內回應每個客戶查詢。哪一個解決方案能以最少的營運開銷滿足這些需求？",
+  "options_zh": {
+   "A": "為 Amazon Bedrock agents 啟用 tracing。設定結構化 prompt，引導 FM 提供佐證呈現。將 Amazon Bedrock knowledge bases 與資料來源整合以啟用 RAG。設定應用程式以參照並引用具權威性的內容。以 Multi-AZ 架構部署應用程式。使用 Amazon API Gateway 與 AWS Lambda 函數來擴展應用程式。使用 Amazon CloudFront 提供低延遲傳遞。",
+   "B": "為 Amazon Bedrock agents 啟用 tracing。將自訂 RAG 管線與 Amazon OpenSearch Service 整合以擷取並引用來源。設定結構化 prompt 以呈現擷取到的佐證。將應用程式部署在 Amazon API Gateway REST API 後方。使用 AWS Lambda 函數與 Amazon CloudFront 來擴展應用程式並提供低延遲。將日誌儲存於 Amazon S3，並使用 AWS CloudTrail 擷取稽核軌跡。",
+   "C": "使用 Amazon CloudWatch 監控延遲與錯誤率。將模型 prompt 直接嵌入應用程式後端以引用來源。將與使用者的應用程式互動儲存於 Amazon RDS 以供稽核。",
+   "D": "將產生的回應與佐證資料儲存於 Amazon S3 儲存貯體。在該儲存貯體上啟用版本控制以供稽核。使用 AWS Glue 對擷取到的文件建立目錄。在 Amazon Athena 中處理擷取到的文件以產生定期合規報告。"
+  }
  },
  {
   "num": 63,
@@ -897,7 +1340,14 @@
   "answers": [
    "A"
   ],
-  "explain": "S3 metadata 框架 → 時間戳=S3 system metadata(自動);領域分類=object tags(分類標籤);作者=user-defined metadata(自訂屬性)。Object Lock(B、D)是合規保留;access points/Storage Lens/Inventory 用途錯誤。"
+  "explain": "S3 metadata 框架 → 時間戳=S3 system metadata(自動);領域分類=object tags(分類標籤);作者=user-defined metadata(自訂屬性)。Object Lock(B、D)是合規保留;access points/Storage Lens/Inventory 用途錯誤。",
+  "stem_zh": "某醫療保健公司正在開發一個文件管理系統，將醫學研究論文儲存於 Amazon S3 儲存貯體。該公司需要建立一個完整的中繼資料 (metadata) 框架，以改善一個分析這些研究論文的生成式 AI (GenAI) 應用程式的搜尋精確度。此中繼資料框架必須包含文件時間戳記、作者資訊及研究領域分類。此解決方案必須在所有上傳的文件之間維持一致的中繼資料結構。此解決方案必須讓 foundation models (FMs) 能夠在不存取完整內容的情況下理解文件脈絡。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "將文件時間戳記儲存於 Amazon S3 系統中繼資料中。使用 S3 物件標籤 (object tags) 實作領域分類。實作自訂的使用者定義中繼資料 (user-defined metadata) 來儲存作者資訊。",
+   "B": "設定 S3 Object Lock 搭配法律保留 (legal holds) 來追蹤文件時間戳記。使用 S3 物件標籤儲存作者資訊。實作 S3 access points 進行領域分類。",
+   "C": "使用 S3 Inventory 報告追蹤文件時間戳記。建立 S3 access points 來實作領域分類。將作者資訊儲存於 S3 Storage Lens 儀表板中。",
+   "D": "使用自訂的使用者定義中繼資料儲存作者資訊。使用 S3 Object Lock 保留期間 (retention periods) 追蹤文件時間戳記。使用 S3 Event Notifications 實作領域分類。"
+  }
  },
  {
   "num": 64,
@@ -911,7 +1361,14 @@
   "answers": [
    "A"
   ],
-  "explain": "客戶保有資料所有權 + 授權第三方 + 不在客戶環境部署服務 → Amazon Q Business 索引(客戶保有)+ 指定 Example Corp 為 data accessor(授權存取)。per-customer MCP server(B)= 在客戶環境部署;跨帳號查詢/分享索引(C、D)削弱所有權。"
+  "explain": "客戶保有資料所有權 + 授權第三方 + 不在客戶環境部署服務 → Amazon Q Business 索引(客戶保有)+ 指定 Example Corp 為 data accessor(授權存取)。per-customer MCP server(B)= 在客戶環境部署;跨帳號查詢/分享索引(C、D)削弱所有權。",
+  "stem_zh": "Example Corp 提供數百萬企業客戶使用的個人化影片產生服務。客戶透過向該公司專屬的生成式 AI (GenAI) 模型送出 prompt 來產生行銷影片。為了改善輸出的相關性與個人化程度，Example Corp 希望利用客戶特定的脈絡（例如產品偏好、客戶屬性及業務歷史）來強化 prompt。這些客戶有嚴格的資料治理需求。客戶必須對自己的資料保有完整的所有權與控制權。客戶不需要即時存取。然而語意準確度必須要高，且擷取延遲必須維持在低水準，以支援客戶體驗的使用情境。Example Corp 希望將其整合模式中的架構複雜度降到最低。Example Corp 不希望在每個客戶的環境中部署與管理服務，除非有必要。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "確保每個客戶都設定一個包含該客戶內部資料的 Amazon Q Business index。確保每個客戶指定 Example Corp 為資料存取者 (data accessor)，讓 Example Corp 能透過安全的 API 擷取相關內容，於執行時強化 prompt。",
+   "B": "使用搭配 Model Context Protocol (MCP) 的聯合搜尋 (federated search)，為每個客戶部署即時 MCP 伺服器。在產生 prompt 期間即時擷取資料。",
+   "C": "確保每個客戶設定一個 Amazon Bedrock knowledge base。允許跨帳戶查詢，讓 Example Corp 能擷取結構化資料以擴充 prompt。",
+   "D": "設定 Amazon Kendra 來爬取客戶的資料來源。在帳戶之間共用產生的索引，讓 Example Corp 能查詢每個客戶的 Amazon Kendra index 以擷取擴充資料。"
+  }
  },
  {
   "num": 65,
@@ -925,7 +1382,14 @@
   "answers": [
    "B"
   ],
-  "explain": "語意關係 + 特定術語/引用(精確)+ 精確結果 → hybrid search(向量語意 + 關鍵字精確術語/引用)+ Bedrock reranker(優化相關性)。純向量(A)漏精確術語;自建 Lambda 合併(D)複雜無 reranker。"
+  "explain": "語意關係 + 特定術語/引用(精確)+ 精確結果 → hybrid search(向量語意 + 關鍵字精確術語/引用)+ Bedrock reranker(優化相關性)。純向量(A)漏精確術語;自建 Lambda 合併(D)複雜無 reranker。",
+  "stem_zh": "某公司正在建置一個法律研究 AI 助理，該助理使用 Amazon Bedrock 搭配 Anthropic Claude foundation model (FM)。此 AI 助理必須擷取高度相關的判例法文件以強化 FM 的回應。此 AI 助理必須辨識法律概念、特定法律術語與引用文獻之間的語意關係。此 AI 助理必須能快速執行並回傳精確的結果。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "設定 Amazon Bedrock knowledge base 使用預設的向量搜尋 (vector search) 設定。使用 Amazon Bedrock 擴展查詢 (query)，以根據特定術語與引用文獻改善法律文件的擷取。",
+   "B": "使用 Amazon OpenSearch Service 部署一個混合搜尋 (hybrid search) 架構，結合向量搜尋與關鍵字搜尋。套用 Amazon Bedrock reranker 模型以最佳化結果相關性。",
+   "C": "為終端使用者啟用 Amazon Kendra 查詢建議 (query suggestion) 功能。使用 Amazon Bedrock 對搜尋結果進行後處理，以辨識文件中的語意相似度並產生精確的結果。",
+   "D": "使用 Amazon OpenSearch Service 搭配向量搜尋及 Amazon Bedrock Titan embeddings 來索引與搜尋法律文件。使用自訂的 AWS Lambda 函數，將結果與儲存於 Amazon RDS 資料庫中、以關鍵字為基礎的篩選條件合併。"
+  }
  },
  {
   "num": 66,
@@ -941,7 +1405,15 @@
    "B",
    "C"
   ],
-  "explain": "token 可觀測性 + 即時 + 最少負擔 → 原生 Bedrock CloudWatch metrics 儀表板+alarms(C)+ Logs Insights 依應用歸因 invocation logs(B)。D 的「Bedrock zero-ETL with Managed Grafana」是假功能;QuickSight(A)/自建管道(E)負擔高。"
+  "explain": "token 可觀測性 + 即時 + 最少負擔 → 原生 Bedrock CloudWatch metrics 儀表板+alarms(C)+ Logs Insights 依應用歸因 invocation logs(B)。D 的「Bedrock zero-ETL with Managed Grafana」是假功能;QuickSight(A)/自建管道(E)負擔高。",
+  "stem_zh": "某公司在多個業務單位部署了多個以 Amazon Bedrock 為基礎的生成式 AI (GenAI) 應用程式，用於客戶服務、內容產生及文件分析。部分應用程式呈現出不可預測的 token 消耗模式。該公司需要一個完整的可觀測性 (observability) 解決方案，提供對多個模型 token 使用模式的即時可見度。此可觀測性解決方案必須支援為多個利害關係人群組建立自訂儀表板，並為該公司應用程式所使用的所有 foundation model 提供 token 消耗的警示功能。哪一組解決方案能以最少的營運開銷滿足這些需求？（選擇兩項。）",
+  "options_zh": {
+   "A": "使用 Amazon CloudWatch metrics 作為資料來源，建立自訂的 Amazon QuickSight 儀表板，顯示跨 FM 的 token 使用趨勢與使用模式。",
+   "B": "使用 Amazon CloudWatch Logs Insights 分析 Amazon Bedrock 呼叫日誌的 token 消耗模式，並依應用程式進行使用歸因。建立自訂查詢以辨識高用量情境。將日誌小工具 (log widgets) 加入儀表板以啟用持續監控。",
+   "C": "建立自訂的 Amazon CloudWatch 儀表板，結合原生的 Amazon Bedrock token 與呼叫 CloudWatch metrics。設定 CloudWatch alarms 以監控 token 使用量門檻。",
+   "D": "透過 Amazon Bedrock 與 Amazon Managed Grafana 的 zero-ETL 整合，建立顯示跨該公司各 FM 之 token 使用趨勢與模式的儀表板。",
+   "E": "實作 Amazon EventBridge 規則以擷取 Amazon Bedrock 模型呼叫事件。將 token 使用資料路由至一個以 Amazon OpenSearch Serverless 為目標的 Amazon Data Firehose 傳遞串流。使用 OpenSearch 儀表板分析使用模式。"
+  }
  },
  {
   "num": 67,
@@ -957,7 +1429,15 @@
    "B",
    "C"
   ],
-  "explain": "一致高吞吐(批次)→ Bedrock provisioned throughput(B);混合雲端+地端(資料駐留)→ SageMaker Neo 邊緣部署 + Lambda(C)。SageMaker 非同步端點(A)非即時;auto-scaling(D)非一致高吞吐;Bedrock 不支援地端。"
+  "explain": "一致高吞吐(批次)→ Bedrock provisioned throughput(B);混合雲端+地端(資料駐留)→ SageMaker Neo 邊緣部署 + Lambda(C)。SageMaker 非同步端點(A)非即時;auto-scaling(D)非一致高吞吐;Bedrock 不支援地端。",
+  "stem_zh": "某公司正在設計一個使用 foundation models (FMs) 來支援多個 AI 工作負載的解決方案。部分 FM 必須以隨需 (on demand) 且即時的方式呼叫。其他 FM 則需要一致的高吞吐量存取以進行批次處理。此解決方案必須支援混合部署模式，並在雲端基礎設施與地端 (on-premises) 基礎設施上執行工作負載，以符合資料落地 (data residency) 與合規需求。哪一組步驟能滿足這些需求？（選擇兩項。）",
+  "options_zh": {
+   "A": "使用 AWS Lambda 來協調低延遲的 FM 推論，方式是呼叫託管於 Amazon SageMaker AI 非同步端點 (asynchronous endpoints) 上的 FM。",
+   "B": "在 Amazon Bedrock 中設定 provisioned throughput，以確保高用量工作負載有一致的效能。",
+   "C": "使用 Amazon SageMaker Neo 將 FM 部署至支援邊緣部署 (edge deployment) 的 Amazon SageMaker AI 端點。使用 AWS Lambda 協調這些 FM 以支援混合部署。",
+   "D": "使用具有自動擴展 (auto-scaling) 功能的 Amazon Bedrock 來處理不可預測的流量激增。",
+   "E": "使用 Amazon SageMaker JumpStart 來託管並呼叫這些 FM。"
+  }
  },
  {
   "num": 68,
@@ -971,7 +1451,14 @@
   "answers": [
    "B"
   ],
-  "explain": "標準化/可重複/版本化/一致治理 → CloudFormation 範本(IaC)+ 集中版本控制 + CI/CD + CloudFormation Guard(部署前強制)。部署後驗證(A)時機錯;文件(D)不可執行 + Macie 誤用。"
+  "explain": "標準化/可重複/版本化/一致治理 → CloudFormation 範本(IaC)+ 集中版本控制 + CI/CD + CloudFormation Guard(部署前強制)。部署後驗證(A)時機錯;文件(D)不可執行 + Macie 誤用。",
+  "stem_zh": "某公司正計劃將多個生成式 AI (GenAI) 應用程式部署至五個獨立的業務單位，這些業務單位在歐洲與美洲的多個國家營運。每個應用程式都使用 Amazon Bedrock 的 Retrieval Augmented Generation (RAG) 模式，搭配儲存數 TB 非結構化資料、各業務單位專屬的 knowledge bases。該公司必須為所有 GenAI 應用程式建立符合 well-architected 原則、標準化的元件，用於安全控制、可觀測性實務及部署模式。這些元件必須可重複使用、有版本控制，且受到一致的治理。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "為這些 GenAI 應用程式設定 Amazon API Gateway REST API 端點。根據 AWS Well-Architected Generative AI Lens，在標準化的 AWS CloudFormation 範本中部署共用的安全、可觀測性及 RAG 模式。部署後在每個業務單位使用 CloudFormation Guard 驗證政策合規性。",
+   "B": "建立標準化的 AWS CloudFormation 範本，以根據 AWS Well-Architected Generative AI Lens 實作安全、可觀測性及 RAG 模式。建立一個執行版本控制的集中式儲存庫。整合一個搭配 CloudFormation Guard 的 CI/CD 管線，以強制在各業務單位之間進行一致且可重複的部署。",
+   "C": "使用 AWS Service Catalog 為每個業務單位定義標準化的產品組合 (portfolios) 與有版本控制的產品。使用這些產品組合，根據 AWS Well-Architected Generative AI Lens 強制執行安全、可觀測性及 RAG 模式。要求各業務單位使用 Service Catalog 主控台來部署資源。",
+   "D": "在一份共用的設計文件中，根據 AWS Well-Architected Generative AI Lens 記錄安全控制、可觀測性需求及 RAG 模式。使用 Amazon Macie 來強制執行部署。將實作責任委派給各業務單位。"
+  }
  },
  {
   "num": 69,
@@ -985,7 +1472,14 @@
   "answers": [
    "D"
   ],
-  "explain": "跨語言一致性評估 + 並行 + 自動化 + 阻擋部署 → 標準化「相同意義」測試集 + Bedrock model evaluation jobs(並行)+ 相似度/幻覺門檻 + CI/CD 阻擋。流量模擬(A)是測效能非回應品質;部署後稽核(B)無法阻擋。"
+  "explain": "跨語言一致性評估 + 並行 + 自動化 + 阻擋部署 → 標準化「相同意義」測試集 + Bedrock model evaluation jobs(並行)+ 相似度/幻覺門檻 + CI/CD 阻擋。流量模擬(A)是測效能非回應品質;部署後稽核(B)無法阻擋。",
+  "stem_zh": "某公司升級了其以 Amazon Bedrock 驅動、支援多語言客戶服務助理的 foundation model (FM)。升級後，該助理在不同語言之間表現出不一致的行為。當面對相同的問題時，該助理開始在某些語言中產生不同的回應。該公司需要一個解決方案，以偵測並處理未來更新時類似的問題。此評估必須在 45 分鐘內針對所有支援的語言完成。此評估必須以並行方式處理至少 15,000 個測試對話。此評估流程必須完全自動化並整合至 CI/CD 管線中。此解決方案在未達到品質門檻時必須封鎖部署。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "建立一個分散式流量模擬框架，同時以多種語言將大量翻譯型工作負載送往該助理。使用 Amazon CloudWatch metrics 監控延遲、並行數與吞吐量。在正式環境發行前執行模擬，以辨識基礎設施瓶頸。",
+   "B": "將該助理部署在多個 AWS Region，搭配 Amazon Route 53 以延遲為基礎的路由 (latency-based routing) 及 AWS Global Accelerator 以改善全球效能。將多語言對話日誌儲存於 Amazon S3。每週執行部署後稽核以檢視一致性。",
+   "C": "建立一個前處理管線，在將訊息送往該助理之前，將所有傳入的訊息正規化為一致的格式。套用以規則為基礎的檢查，以標示輸出中潛在的幻覺 (hallucinations)。將評估聚焦於正規化後的文字，以簡化跨語言的測試。",
+   "D": "設定意義相同的標準化多語言測試對話。使用 Amazon Bedrock 模型評估工作 (model evaluation jobs) 以並行方式執行這些測試對話。套用相似度與幻覺門檻。將此流程整合至 CI/CD 管線，以封鎖未通過的發行。"
+  }
  },
  {
   "num": 70,
@@ -999,7 +1493,14 @@
   "answers": [
    "C"
   ],
-  "explain": "偵測異常 + 識別特定工具 + 自動調整門檻 → CloudWatch metric filters(抽取工具特定指標)+ anomaly detection 警報(自動調整基準)。固定門檻(A)/手動更新(D)不自動調整;Athena 報告(B)是批次。"
+  "explain": "偵測異常 + 識別特定工具 + 自動調整門檻 → CloudWatch metric filters(抽取工具特定指標)+ anomaly detection 警報(自動調整基準)。固定門檻(A)/手動更新(D)不自動調整;Athena 報告(B)是批次。",
+  "stem_zh": "某公司正在開發一個使用 Amazon Bedrock foundation models (FMs) 的生成式 AI (GenAI) 應用程式。此應用程式有數個自訂工具整合 (tool integrations)。儘管使用者流量一致，此應用程式仍經歷了非預期的 token 消耗激增。該公司需要一個使用 Amazon Bedrock 模型呼叫記錄來監控 InputTokenCount metrics 與 OutputTokenCount metrics 的解決方案。此解決方案必須偵測工具使用中的異常模式，並辨識出哪些特定的工具整合導致異常的 token 消耗。此解決方案還必須在流量模式改變時自動調整門檻。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "使用 Amazon CloudWatch Logs 擷取模型呼叫日誌。根據 InputTokenCount metrics 與 OutputTokenCount metrics 建立 CloudWatch 儀表板。為每個工具整合設定具有固定門檻的靜態 CloudWatch alarms。",
+   "B": "將模型呼叫日誌儲存於 Amazon S3 儲存貯體。使用 AWS Glue 對日誌建立目錄。使用排程的 Amazon Athena 查詢分析 token 消耗模式，產生工具使用趨勢報告。",
+   "C": "使用 Amazon CloudWatch Logs 擷取模型呼叫日誌。建立 CloudWatch metric filters 以擷取各工具特定的呼叫模式。套用 CloudWatch anomaly detection alarms，為每個工具的 metrics 調整基準 (baselines)。",
+   "D": "將模型呼叫日誌儲存於 Amazon S3 儲存貯體。建立一個 AWS Lambda 函數以即時處理日誌。根據 Lambda 函數所辨識出的 token 消耗趨勢，手動更新 Amazon CloudWatch alarm 門檻。"
+  }
  },
  {
   "num": 71,
@@ -1013,7 +1514,14 @@
   "answers": [
    "B"
   ],
-  "explain": "跨區低延遲 + 資料駐留 + 應對配額 + 最少複雜度 → cross-Region inference profiles(地理代碼保留歐洲 + 分散流量)+ API Gateway 區域導流。自訂路由(A)/自建故障轉移(C、D)複雜且可能切出歐洲違反駐留。"
+  "explain": "跨區低延遲 + 資料駐留 + 應對配額 + 最少複雜度 → cross-Region inference profiles(地理代碼保留歐洲 + 分散流量)+ API Gateway 區域導流。自訂路由(A)/自建故障轉移(C、D)複雜且可能切出歐洲違反駐留。",
+  "stem_zh": "某公司正在使用 Amazon Bedrock 開發一個 AI 驅動的應用程式，該應用程式使用一個支援跨 Region 推論 (cross-Region inference) 與 provisioned throughput 的 foundation model (FM)。此應用程式必須以一致的低延遲服務歐洲與北美的使用者。此應用程式必須符合資料落地 (data residency) 法規，這些法規要求歐洲使用者資料必須保留在歐洲的 AWS Region 內。測試期間，當 Region 流量激增達到服務 quota 時，此應用程式出現服務降級。該公司需要一個能維持應用程式韌性並將營運複雜度降至最低的解決方案。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "在北美與歐洲 Region 部署各自獨立的 Amazon Bedrock 實例。使用自訂的路由層，根據使用者位置導向流量。設定 Amazon CloudWatch alarms 以監控各 Region 的服務使用量。使用 Amazon SNS 在使用量接近指定門檻時向公司寄送電子郵件警示。",
+   "B": "使用 Amazon Bedrock 跨 Region 推論設定檔 (cross-Region inference profiles)，方式是在應用程式呼叫 InvokeModel API 時於設定檔 ID 中指定地理代碼。設定各自獨立的 Amazon API Gateway HTTP API，將歐洲與北美使用者導向適當的 Region 端點。",
+   "C": "部署一個跨多 Region 的 Amazon API Gateway HTTP API 與實作重試邏輯的 AWS Lambda 函數以處理 throttling。設定這些 Lambda 函數，在應用程式於主要 Region 達到服務 quota 時，於最近的次要 Region 呼叫 FM。使用智慧路由以確保符合資料落地需求。",
+   "D": "在多個 Region 為 Amazon Bedrock 設定 provisioned throughput。在應用程式程式碼中實作容錯移轉 (failover) 邏輯，以在發生 throttling 時於 Region 之間切換。使用 AWS Global Accelerator 根據使用者位置將流量路由至適當的端點。"
+  }
  },
  {
   "num": 72,
@@ -1027,7 +1535,14 @@
   "answers": [
    "B"
   ],
-  "explain": "RAG + 多區 + 低延遲 + 資料駐留 → 每區部署 Bedrock 模型 + Knowledge Bases 向量 DB + 知識庫存各區 S3。Kendra(A)非 Bedrock RAG 向量元件;Outposts(C)是地端非 AWS 多區;EC2 自建 LLM(D)負擔高。"
+  "explain": "RAG + 多區 + 低延遲 + 資料駐留 → 每區部署 Bedrock 模型 + Knowledge Bases 向量 DB + 知識庫存各區 S3。Kendra(A)非 Bedrock RAG 向量元件;Outposts(C)是地端非 AWS 多區;EC2 自建 LLM(D)負擔高。",
+  "stem_zh": "某跨國公司正在建置一個使用 RAG 的 AI 助理。該公司希望此 AI 助理具有近乎即時的低延遲效能。此 AI 助理必須為數個地理區域提供服務。該公司的客戶將使用專屬資料搭配此 AI 助理。這些專屬資料不得離開公司所在的直接地理區域。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "部署一個搭配跨 Region 模型推論設定檔的 Amazon Bedrock 模型。在公司營運的每個 AWS Region 建立 Amazon S3 儲存貯體。在各自的 S3 儲存貯體中儲存一個 knowledge base。在每個 Region，設定 Amazon Kendra 與各自的 knowledge base 互動。在每個 Region，設定一個使用 Kendra 與 Amazon Bedrock 來處理 AI 助理 prompt 的 AWS Lambda 函數。",
+   "B": "在公司營運的每個 AWS Region 部署一個 Amazon Bedrock 模型。設定一個 Amazon Bedrock 跨 Region 模型推論設定檔。設定一個使用 Amazon Bedrock Knowledge Bases 的向量資料庫。在公司營運的每個 Region 將 knowledge bases 儲存於 Amazon S3。",
+   "C": "使用 AWS Outposts 在公司營運的每個 AWS Region 部署一個 outpost。建立 Amazon S3 儲存貯體，在每個對應的 Region 儲存 knowledge bases。在每個 outpost 部署設定為向量資料庫的 Amazon RDS。在一個中央 Region 部署一個搭配跨 Region 推論設定檔的 Amazon Bedrock 模型。",
+   "D": "在公司營運的每個 AWS Local Zone，設定一個儲存於 Amazon S3 Express One Zone 儲存類別的 knowledge base。使用 Amazon RDS 在公司營運的每個 Local Zone 部署一個向量資料庫。在每個 Local Zone 將一個大型語言模型 (LLM) 部署至 Amazon EC2 實例。設定 AI 助理，將 prompt 路由至各自 Local Zone 中的模型。"
+  }
  },
  {
   "num": 73,
@@ -1041,7 +1556,14 @@
   "answers": [
    "D"
   ],
-  "explain": "跨環境一致 FM + 多輪脈絡 + 一致認證 → Converse API(一致介面+多輪)+ messages array 傳對話歷史(脈絡)+ IAM 角色(一致認證)。獨立認證(A)不一致;process memory(C)易失不跨實例。"
+  "explain": "跨環境一致 FM + 多輪脈絡 + 一致認證 → Converse API(一致介面+多輪)+ messages array 傳對話歷史(脈絡)+ IAM 角色(一致認證)。獨立認證(A)不一致;process memory(C)易失不跨實例。",
+  "stem_zh": "某公司正在建置一個處理財務報告並為分析師提供摘要的生成式 AI (GenAI) 應用程式。此應用程式必須執行兩個運算環境。在其中一個環境中，AWS Lambda 函數必須使用 Python SDK 隨需分析報告。在第二個環境中，Amazon EKS 容器必須使用 JavaScript SDK 依排程批次處理多份報告。此應用程式必須在多輪 (multi-turn) 互動過程中維持對話脈絡、在各環境間使用相同的 foundation model (FM)，並確保一致的驗證。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "使用 Amazon Bedrock InvokeModel API，並為每個環境採用各自獨立的驗證方法。將對話狀態儲存於 Amazon DynamoDB。為每種程式語言使用自訂的 I/O 格式化邏輯。",
+   "B": "在兩個環境中直接使用 Amazon Bedrock Converse API，並採用一個使用 IAM roles 的共用驗證機制。將對話狀態儲存於 Amazon ElastiCache。為模型參數建立各程式語言專屬的封裝 (wrappers)。",
+   "C": "建立一個集中式的 Amazon API Gateway REST API 端點，使用 InvokeModel API 處理所有模型互動。在每個 Lambda 函數或 EKS 容器的應用程式處理程序記憶體中儲存互動歷史。使用環境變數設定模型參數。",
+   "D": "使用 Amazon Bedrock Converse API 與 IAM roles 進行驗證。在請求的 messages 陣列中傳入先前的訊息以維持對話脈絡。使用各程式語言專屬的 SDK 來建立一致的 API 介面。"
+  }
  },
  {
   "num": 74,
@@ -1055,7 +1577,14 @@
   "answers": [
    "C"
   ],
-  "explain": "節流 + 低流量不需固定成本 → cross-Region inference endpoints(分散流量解節流 + 按用量,無固定成本)。provisioned throughput(A)是固定成本違反需求;故障轉移(B)是被動備援;同區多版本(D)不解決區域配額。"
+  "explain": "節流 + 低流量不需固定成本 → cross-Region inference endpoints(分散流量解節流 + 按用量,無固定成本)。provisioned throughput(A)是固定成本違反需求;故障轉移(B)是被動備援;同區多版本(D)不解決區域配額。",
+  "stem_zh": "某公司正在建置一個使用 AWS Lambda 函數的無伺服器應用程式，協助全球學生摘要筆記。此應用程式透過 Amazon Bedrock 使用 Anthropic Claude。該公司觀察到大多數流量發生在各時區的傍晚。使用者回報在其所在時區的尖峰使用時段遭遇 throttling 錯誤。該公司需要透過確保應用程式持續運作來解決 throttling 問題。此解決方案必須維持應用程式的效能品質。該公司需要一個在低流量期間不需固定每小時成本的解決方案。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "建立自訂的 Amazon CloudWatch metrics 以監控模型錯誤。將 provisioned throughput 設定為一個安全地高於所觀察到尖峰流量的值。",
+   "B": "建立自訂的 Amazon CloudWatch metrics 以監控模型錯誤。設定一個容錯移轉 (failover) 機制，在錯誤超過指定門檻時將呼叫重新導向至備援的 AWS Region。",
+   "C": "在 Amazon Bedrock 中啟用呼叫記錄。監控 Invocations、InputTokenCount、OutputTokenCount 及 Invocation Throttles 等關鍵 metrics。將流量分散至跨 Region 推論端點。",
+   "D": "在 Amazon Bedrock 中啟用呼叫記錄。監控 InvocationLatency、InvocationClientErrors 及 InvocationServerErrors metrics。將流量分散至同一模型的多個版本。"
+  }
  },
  {
   "num": 75,
@@ -1069,7 +1598,14 @@
   "answers": [
    "C"
   ],
-  "explain": "MCP on Lambda + 最少負擔(含第三方)→ Lambda Function URL(免管 API Gateway)+ Streamable HTTP + SigV4/IAM(IAM 可跨帳號授權第三方)。別因「第三方」反射選 OAuth(D);Function URL+IAM 元件最少。放棄 MCP(B)錯。"
+  "explain": "MCP on Lambda + 最少負擔(含第三方)→ Lambda Function URL(免管 API Gateway)+ Streamable HTTP + SigV4/IAM(IAM 可跨帳號授權第三方)。別因「第三方」反射選 OAuth(D);Function URL+IAM 元件最少。放棄 MCP(B)錯。",
+  "stem_zh": "某公司正在開發一個新的 AI 驅動應用程式，需要與各種專門工具整合。這些工具目前以 Model Context Protocol (MCP) 伺服器的形式在開發人員的本機上執行，且在呼叫之間不維持狀態。該公司計劃將每個 MCP 伺服器部署為一個 AWS Lambda 函數，以支援該公司的正式環境應用程式。此解決方案必須能讓內部應用程式與經授權的第三方合作夥伴皆可存取。此解決方案必須使用嚴格的驗證與授權控制。哪些額外步驟能以最少的營運開銷滿足這些需求？",
+  "options_zh": {
+   "A": "使用 Lambda Invoke API 建立一個自訂的 Lambda 呼叫傳輸。實作 IAM 驗證，並將 InvokeFunction 權限授予經授權的使用者與 roles。",
+   "B": "透過 Amazon API Gateway REST API 端點公開這些 Lambda 函數。實作 API keys 進行驗證。設定需要存取 MCP 伺服器的應用程式使用標準 HTTP 請求，而非 MCP 協定。",
+   "C": "建立 Lambda function URLs 並啟用自訂的 Streamable HTTP 傳輸與 SigV4。實作 AWS IAM 驗證。將 InvokeFunctionUrl 權限授予經授權的使用者與 roles。",
+   "D": "透過搭配 Streamable HTTP 傳輸的 Amazon API Gateway HTTP API 端點公開這些 Lambda 函數。使用 Amazon Cognito 實作 OAuth 驗證。設定 API Gateway 以驗證 OAuth tokens。"
+  }
  },
  {
   "num": 76,
@@ -1083,7 +1619,14 @@
   "answers": [
    "B"
   ],
-  "explain": "處理暫時錯誤 + 防連鎖 + 分散式追蹤 + 關聯 FM 特徵 → 指數退避+jitter(防連鎖)+ AWS X-Ray annotations(分散式追蹤+過濾關聯)。固定延遲(A)不防連鎖;CloudTrail(D)是 API 稽核非分散式追蹤。"
+  "explain": "處理暫時錯誤 + 防連鎖 + 分散式追蹤 + 關聯 FM 特徵 → 指數退避+jitter(防連鎖)+ AWS X-Ray annotations(分散式追蹤+過濾關聯)。固定延遲(A)不防連鎖;CloudTrail(D)是 API 稽核非分散式追蹤。",
+  "stem_zh": "某公司有一個使用 Amazon Bedrock 對客戶查詢提供即時回應的生成式 AI (GenAI) 應用程式。該公司注意到在尖峰流量期間，對 foundation models (FMs) 的 API 呼叫出現間歇性失敗。該公司需要一個解決方案來處理暫時性錯誤，並對 FM 效能提供詳細的可觀測性。此解決方案必須在 throttling 事件期間防止級聯故障 (cascading failures)，並提供跨服務邊界的分散式追蹤 (distributed tracing) 以辨識延遲的成因。此解決方案還必須能將效能問題與特定 FM 特性建立關聯。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "實作一個自訂的重試機制，重試之間採用 1 秒的固定延遲。設定 Amazon CloudWatch alarms 以監控應用程式的錯誤率與延遲 metrics。",
+   "B": "將 AWS SDK 設定為標準重試模式 (standard retry mode)，並採用搭配 jitter 的指數退避 (exponential backoff)。使用搭配註解 (annotations) 的 AWS X-Ray tracing 來辨識並篩選服務元件。",
+   "C": "實作所有 FM 回應的用戶端快取 (client-side caching)。在應用程式程式碼中加入自訂的記錄陳述式以記錄 API 呼叫的持續時間。",
+   "D": "將 AWS SDK 設定為調適性重試模式 (adaptive retry mode)。使用 AWS CloudTrail 分散式追蹤來監控 throttling 事件。"
+  }
  },
  {
   "num": 77,
@@ -1097,7 +1640,14 @@
   "answers": [
    "B"
   ],
-  "explain": "隱私+安全I/O+控制FM存取+稽核誰何時存取什麼 → VPC endpoint + IAM condition keys(GuardrailId/ModelId 控制FM存取)+ CloudTrail data events + S3 access logging + CloudTrail Lake。Config(C)非存取稽核;Macie(D)無法分類影片;trace events(A)非存取稽核。"
+  "explain": "隱私+安全I/O+控制FM存取+稽核誰何時存取什麼 → VPC endpoint + IAM condition keys(GuardrailId/ModelId 控制FM存取)+ CloudTrail data events + S3 access logging + CloudTrail Lake。Config(C)非存取稽核;Macie(D)無法分類影片;trace events(A)非存取稽核。",
+  "stem_zh": "某公司正在 AWS 上建置一個影片分析平台。此平台將使用 Amazon Rekognition 與 Amazon Bedrock 來分析大量的影片封存資料。此平台必須符合預先定義的隱私標準。此平台還必須使用安全的模型 I/O、控制 foundation model (FM) 的存取模式，並提供誰在何時存取了什麼的稽核紀錄。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "為 Amazon Bedrock 模型 API 呼叫設定 VPC 端點。實作 Amazon Bedrock Guardrails 以過濾 prompt 與回應中有害或未經授權的內容。使用 Amazon Bedrock trace events 追蹤所有 agent 與模型呼叫以供稽核之用。將這些追蹤匯出至 Amazon CloudWatch Logs 作為模型使用的稽核紀錄。將所有 prompt 與輸出儲存於使用 AWS KMS keys 之伺服器端加密 (SSE-KMS) 的 Amazon S3。",
+   "B": "使用 IAM 搭配以屬性為基礎的控制 (attribute-based controls) 定義存取控制，將部門對應至特定權限。為 Amazon Bedrock 模型 API 呼叫設定 VPC 端點。使用 IAM 條件鍵 (condition keys) 強制執行特定的 GuardrailIdentifier 與 ModelId 值。設定 AWS CloudTrail 以擷取 S3 物件與 KMS key 使用活動的管理事件與資料事件。啟用 S3 伺服器存取記錄以記錄與影片封存資料的詳細檔案層級互動。將所有 CloudTrail 日誌傳送至 AWS CloudTrail Lake。設定 Amazon CloudWatch alarms 以偵測並對來自 Amazon Bedrock、Amazon Rekognition 及 AWS KMS 的非預期活動發出警示。",
+   "C": "使用 VPC 端點政策限制對服務的存取。使用 AWS Config 追蹤資源變更與安全規則的合規性。使用 AWS KMS keys 之伺服器端加密 (SSE-KMS) 加密靜態資料。將模型的 I/O 儲存於各自獨立的 Amazon S3 儲存貯體。啟用 S3 伺服器存取記錄以追蹤檔案層級互動。",
+   "D": "設定 AWS CloudTrail Insights 以分析跨帳戶的 API 呼叫模式，並偵測 Amazon Bedrock、Amazon Rekognition、Amazon S3 及 AWS KMS 中的異常活動。部署 Amazon Macie 以掃描並分類影片封存資料。使用 AWS KMS keys 之伺服器端加密 (SSE-KMS) 加密所有儲存的資料。設定 CloudTrail 以擷取 KMS API 使用事件供稽核之用。設定 Amazon EventBridge 規則以處理 CloudTrail Insights 異常與 Macie 發現項目。使用 CloudWatch alarms 在偵測到潛在安全問題時觸發自動化通知與安全回應。"
+  }
  },
  {
   "num": 78,
@@ -1111,7 +1661,14 @@
   "answers": [
    "D"
   ],
-  "explain": "「上傳新檔自動重訓＋重部署 + 狀態管理編排」→ Step Functions Standard(支援長時間執行＋狀態管理,適合可能跑很久的訓練,避開 Express 5 分上限)+ Lambda 回應 S3 上傳 + SageMaker Pipelines(重訓＋部署)。B 用 webhook handlers 對內部 S3 上傳過度複雜,且透過自訂事件巴士觸發缺狀態管理;Express(C)5 分上限重訓會超時且 Autopilot 是 AutoML 非既有模型重訓;Glue＋即時推論(A)沒有重訓步驟。"
+  "explain": "「上傳新檔自動重訓＋重部署 + 狀態管理編排」→ Step Functions Standard(支援長時間執行＋狀態管理,適合可能跑很久的訓練,避開 Express 5 分上限)+ Lambda 回應 S3 上傳 + SageMaker Pipelines(重訓＋部署)。B 用 webhook handlers 對內部 S3 上傳過度複雜,且透過自訂事件巴士觸發缺狀態管理;Express(C)5 分上限重訓會超時且 Autopilot 是 AutoML 非既有模型重訓;Glue＋即時推論(A)沒有重訓步驟。",
+  "stem_zh": "某保險公司使用既有的 Amazon SageMaker AI 基礎設施來支援一個以網頁為基礎的應用程式，讓客戶能預測其保費將是多少。該公司將用於訓練 SageMaker AI 模型的客戶資料儲存於一個 Amazon S3 儲存貯體。資料集正在快速成長。該公司希望有一個持續重新訓練模型的解決方案。此解決方案必須在員工將新的客戶資料檔案上傳至 S3 儲存貯體時，自動重新訓練模型並將其重新部署至應用程式。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "使用 AWS Glue 對每個上傳的檔案執行一個 ETL 工作。設定該 ETL 工作使用 AWS SDK 呼叫 SageMaker AI 模型端點。使用該端點的即時推論，在模型於更新後的客戶資料集上重新訓練後重新部署模型。",
+   "B": "建立一個 AWS Lambda 函數與 webhook 處理常式，在員工上傳新檔案時產生事件。設定 SageMaker Pipelines，在模型於更新後的客戶資料集上重新訓練後重新部署模型。使用 Amazon EventBridge 建立一個事件匯流排 (event bus)。將 Lambda 函數事件設為來源，並將 SageMaker Pipelines 設為目標。",
+   "C": "建立一個搭配 AWS SDK 整合的 AWS Step Functions Express 工作流程，在員工將新檔案上傳至 S3 儲存貯體時從該儲存貯體擷取客戶資料。使用 SageMaker Data Wrangler 流程將資料從 S3 儲存貯體匯出至 SageMaker Autopilot。使用 SageMaker Autopilot 在模型於更新後的客戶資料集上重新訓練後重新部署模型。",
+   "D": "建立一個 AWS Step Functions Standard 工作流程。設定第一個狀態以在員工將新檔案上傳至 S3 儲存貯體時呼叫一個 AWS Lambda 函數作出回應。使用 SageMaker Pipelines 中的一個管線，在模型於更新後的客戶資料集上重新訓練後重新部署模型。使用工作流程中的下一個狀態，在第一個狀態收到回應時執行該管線。"
+  }
  },
  {
   "num": 79,
@@ -1125,7 +1682,14 @@
   "answers": [
    "B"
   ],
-  "explain": "評估生成品質 + 比較分塊 + 兩 FM + 門檻 → retrieve-and-generate 評估(評生成)+ 各分塊納入資料集 + LLM-as-a-judge。retrieve-only(A、D)只評檢索不評生成;手動審查(C)非強制門檻。"
+  "explain": "評估生成品質 + 比較分塊 + 兩 FM + 門檻 → retrieve-and-generate 評估(評生成)+ 各分塊納入資料集 + LLM-as-a-judge。retrieve-only(A、D)只評檢索不評生成;手動審查(C)非強制門檻。",
+  "stem_zh": "某公司使用 Amazon Bedrock 實作一個以 Retrieval Augmented Generation (RAG) 為基礎的系統，向使用者提供醫療資訊。該公司需要比較多種分塊策略 (chunking strategies)、評估兩個 foundation models (FMs) 的產生品質，並為部署強制執行品質門檻。哪一個 Amazon Bedrock 評估設定能滿足這些需求？",
+  "options_zh": {
+   "A": "建立一個僅擷取 (retrieve-only) 的評估工作，使用受支援版本的 Anthropic Claude Sonnet 作為評估者模型。設定 context relevance 與 context coverage 的 metrics。在另一個獨立的 CI/CD 管線中定義部署門檻。",
+   "B": "建立一個擷取並產生 (retrieve-and-generate) 的評估工作，使用自訂的 precision at k metrics 以及採用 1 到 5 分制的 LLM-as-a-judge metric。將每種分塊策略納入評估資料集中。使用受支援版本的 Anthropic Claude Sonnet 評估來自兩個 FM 的回應。",
+   "C": "為每種分塊策略與 FM 的組合建立各自獨立的評估工作。使用 Amazon Bedrock 內建的 correctness 與 completeness metrics。在核准部署前手動檢視分數。",
+   "D": "設定一個使用多個僅擷取 (retrieve-only) 評估工作的管線以評估擷取品質。為兩個 FM 建立各自獨立、使用 Amazon Nova Pro 作為 LLM-as-a-judge 模型的評估工作。根據 faithfulness 與 citation precision metrics 進行評估。"
+  }
  },
  {
   "num": 80,
@@ -1139,7 +1703,14 @@
   "answers": [
    "B"
   ],
-  "explain": "多模態 + 自然語言 + 避免推測 + 稽核 → SageMaker Processing/Transcribe(多模態預處理)+ Bedrock RAG(自然語言)+ Guardrails(限制推測性輸出)+ CloudTrail(稽核)。基本範本(A)/自建 Lambda 過濾(D)無法可靠避免推測。"
+  "explain": "多模態 + 自然語言 + 避免推測 + 稽核 → SageMaker Processing/Transcribe(多模態預處理)+ Bedrock RAG(自然語言)+ Guardrails(限制推測性輸出)+ CloudTrail(稽核)。基本範本(A)/自建 Lambda 過濾(D)無法可靠避免推測。",
+  "stem_zh": "某野生動物保育機構在全球營運動物園。該機構使用各種感測器、追蹤器及視聽錄製設備來監控動物行為。該機構希望推出一個能擷取多模態 (multimodal) 資料以研究動物行為的生成式 AI (GenAI) 助理。此 GenAI 助理必須支援自然語言查詢、避免臆測性的行為詮釋，並維持稽核日誌以供倫理研究稽核之用。哪一個解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "將原始影片擷取至 Amazon Rekognition 以偵測動物姿態與表情。使用 Amazon Data Firehose 將感測器與 GPS 資料串流至 Amazon S3 資料湖。使用儲存於 AWS Systems Manager Parameter Store 的基本範本來向 Amazon Bedrock foundation model (FM) 下 prompt。使用 IAM 政策控制存取。使用 AWS CloudTrail 進行稽核記錄。",
+   "B": "使用 Amazon SageMaker Processing 與 Amazon Transcribe 預先處理多模態資料。將摘要擷取至一個 Amazon Bedrock Retrieval Augmented Generation (RAG) knowledge base。套用 Amazon Bedrock guardrails 以限制臆測性的輸出。使用 AWS AppConfig 管理 prompt 範本。使用 AWS CloudTrail 記錄研究活動以供稽核。",
+   "C": "使用 Amazon OpenSearch Serverless 索引行為日誌與遙測事件。使用 Amazon Comprehend 擷取實體 (entities)。使用 Amazon Bedrock 建立一個回答問題的層。將研究摘要嵌入 (embed) 至 OpenSearch Serverless 文件中。使用 IAM 控制存取。使用 AWS CloudTrail 記錄使用者與 AI 助理的互動。",
+   "D": "設定 Amazon Q Business 以跨 Amazon S3、Amazon Kinesis 及 Amazon SageMaker Feature Store 聯合 (federate) 資料。設定 Amazon EventBridge 以呼叫資料擷取工作。使用自訂的 AWS Lambda 函數，在將結果回傳給使用者之前篩選大型語言模型 (LLM) 的輸出以符合倫理規範。"
+  }
  },
  {
   "num": 81,
@@ -1155,7 +1726,15 @@
    "B",
    "D"
   ],
-  "explain": "組織多帳號集中管理 → SCP 同時做「限核准模型 + 要求指定 guardrail identifier」(B,集中可擴展)+ block filtering guardrail + stack sets 跨帳號部署(D)。permissions boundary(A、C)需逐角色套用負擔高;mask(E)是遮蔽非「防止包含」(用 block)。"
+  "explain": "組織多帳號集中管理 → SCP 同時做「限核准模型 + 要求指定 guardrail identifier」(B,集中可擴展)+ block filtering guardrail + stack sets 跨帳號部署(D)。permissions boundary(A、C)需逐角色套用負擔高;mask(E)是遮蔽非「防止包含」(用 block)。",
+  "stem_zh": "某公司使用啟用所有功能的 AWS Organizations 中的 organization 來管理多個 AWS 帳戶。員工在多個帳戶中使用 Amazon Bedrock。該公司必須防止特定主題與專屬機密資訊被包含在傳送給 Amazon Bedrock 模型的 prompt 中。該公司必須確保員工只能使用核准的 Amazon Bedrock 模型。該公司集中管理員工的 IAM roles。哪一組解決方案能滿足這些需求？（選擇兩項。）",
+  "options_zh": {
+   "A": "為每位員工的 IAM role 建立一個 IAM permissions boundary。設定該 permissions boundary 以要求必須提供核准的 Amazon Bedrock guardrail 識別碼才能呼叫 Amazon Bedrock 模型。建立一個 SCP，僅允許員工使用核准的模型。",
+   "B": "建立一個 SCP，僅允許員工使用核准的模型。設定該 SCP 以要求員工在呼叫核准模型時必須指定 guardrail 識別碼。",
+   "C": "建立一個 SCP，當員工在呼叫模型時未指定集中部署的 guardrail 識別碼時，便阻止其呼叫該模型。在每位員工的 IAM role 上建立一個 permissions boundary，僅允許每位員工呼叫核准的模型。",
+   "D": "使用 AWS CloudFormation 建立一個具有封鎖（block）過濾政策的自訂 Amazon Bedrock guardrail。使用 stack sets 將該 guardrail 部署到 organization 中的每個帳戶。",
+   "E": "使用 AWS CloudFormation 建立一個具有遮罩（mask）過濾政策的自訂 Amazon Bedrock guardrail。使用 stack sets 將該 guardrail 部署到 organization 中的每個帳戶。"
+  }
  },
  {
   "num": 82,
@@ -1169,7 +1748,14 @@
   "answers": [
    "D"
   ],
-  "explain": "「串流 + token 限制 + 重試 + 最少負擔 + Bedrock 託管」→ API Gateway REST API + Lambda + Lambda response streaming(串流)+ Lambda 內 token 限制 + 逾時重試,全 serverless 免管。〔註:A(HTTP API + Lambda,其餘相同)亦為部分題庫答案——HTTP API 更輕更省延遲更低;但考試慣例常以「REST API + Lambda response streaming」為標準答案,故本題依使用者定案選 D。〕用戶端輪詢(B)非真串流;ECS 容器(C)自管負擔最高。"
+  "explain": "「串流 + token 限制 + 重試 + 最少負擔 + Bedrock 託管」→ API Gateway REST API + Lambda + Lambda response streaming(串流)+ Lambda 內 token 限制 + 逾時重試,全 serverless 免管。〔註:A(HTTP API + Lambda,其餘相同)亦為部分題庫答案——HTTP API 更輕更省延遲更低;但考試慣例常以「REST API + Lambda response streaming」為標準答案,故本題依使用者定案選 D。〕用戶端輪詢(B)非真串流;ECS 容器(C)自管負擔最高。",
+  "stem_zh": "某公司正在為一個 generative AI (GenAI) 應用程式設計 API，該應用程式使用託管於受管模型服務上的 foundation model (FM)。此 API 必須串流（stream）回應以降低延遲、強制執行 token 限制以管理運算資源使用量，並實作重試邏輯以處理模型逾時與部分回應。哪一種解決方案能以最少的營運負擔滿足這些需求？",
+  "options_zh": {
+   "A": "將 Amazon API Gateway HTTP API 與一個 AWS Lambda 函式整合以呼叫 Amazon Bedrock。使用 Lambda response streaming 來串流回應。在 Lambda 函式內強制執行 token 限制。透過 Lambda 與 API Gateway 的逾時設定為模型逾時實作重試邏輯。",
+   "B": "將 Amazon API Gateway HTTP API 直接連接到 Amazon Bedrock。透過用戶端輪詢（client-side polling）來模擬串流。在前端強制執行 token 限制。透過 API Gateway 整合設定來設定重試行為。",
+   "C": "將 Amazon API Gateway WebSocket API 連接到一個託管容器化推論伺服器的 Amazon ECS 服務。使用 WebSocket 協定串流回應。在 Amazon ECS 內強制執行 token 限制。透過 ECS task 生命週期掛勾（lifecycle hooks）與重啟政策處理模型逾時。",
+   "D": "將 Amazon API Gateway REST API 與一個呼叫 Amazon Bedrock 的 AWS Lambda 函式整合。使用 Lambda response streaming 來串流回應。在 Lambda 函式內強制執行 token 限制。透過 Lambda 與 API Gateway 的逾時設定實作重試邏輯。"
+  }
  },
  {
   "num": 83,
@@ -1183,7 +1769,14 @@
   "answers": [
    "B"
   ],
-  "explain": "依複雜度自動路由模型 + 成本效益 + 最少實作 → Bedrock intelligent prompt routing(內建自動路由)。自建分類器+Lambda(A)/規則式關鍵字(D)實作多;單一模型(C)無路由且成本差。"
+  "explain": "依複雜度自動路由模型 + 成本效益 + 最少實作 → Bedrock intelligent prompt routing(內建自動路由)。自建分類器+Lambda(A)/規則式關鍵字(D)實作多;單一模型(C)無路由且成本差。",
+  "stem_zh": "某零售公司正在使用 Amazon Bedrock 開發一個客服 AI 助理。分析顯示，70% 的客戶詢問是較小型模型即可有效處理的簡單產品問題。然而，30% 的詢問是需要進階推理的複雜退貨政策問題。該公司希望實作一個具成本效益的模型選擇框架，以根據詢問的複雜度自動將客戶詢問路由至適當的模型。該框架必須維持高客戶滿意度並將回應延遲降至最低。哪一種解決方案能以最少的實作工作量滿足這些需求？",
+  "options_zh": {
+   "A": "建立一個多階段架構，使用一個小型 foundation model (FM) 來分類每個詢問的複雜度。將簡單詢問路由至較小型、更具成本效益的模型。將複雜詢問路由至較大型、能力更強的模型。使用 AWS Lambda 函式處理路由邏輯。",
+   "B": "使用 Amazon Bedrock intelligent prompt routing 自動分析詢問。將簡單的產品詢問路由至較小型模型，並將複雜的退貨政策詢問路由至能力更強的較大型模型。",
+   "C": "實作一個單一模型解決方案，使用採隨需（on-demand）定價的 Amazon Bedrock 中型 foundation model (FM)。在模型 prompt 中加入特殊指示，以使用同一個模型來處理簡單與複雜的詢問。",
+   "D": "為簡單與複雜詢問分別建立各自的 Amazon Bedrock endpoint。實作一個以關鍵字偵測為基礎的規則型路由系統。對較小型模型使用隨需定價，對較大型模型使用 provisioned throughput。"
+  }
  },
  {
   "num": 84,
@@ -1197,7 +1790,14 @@
   "answers": [
    "A"
   ],
-  "explain": "輸出一致性 + 低延遲 + 阻擋不安全/幻覺 → provisioned throughput(穩定低延遲)+ Guardrails semantic denial(阻擋不安全)+ Prompt Management(一致性)。B、C、D 都缺「阻擋不安全輸出」的安全控制。"
+  "explain": "輸出一致性 + 低延遲 + 阻擋不安全/幻覺 → provisioned throughput(穩定低延遲)+ Guardrails semantic denial(阻擋不安全)+ Prompt Management(一致性)。B、C、D 都缺「阻擋不安全輸出」的安全控制。",
+  "stem_zh": "某精品咖啡公司有一個行動應用程式，使用 Amazon Bedrock 搭配三階段 prompt chain 來產生個人化的咖啡烘焙設定檔。此 prompt chain 將使用者輸入轉換為結構化中繼資料、擷取相關的咖啡烘焙紀錄，並為每位顧客產生個人化的烘焙建議。位於多個 AWS Regions 的使用者回報，相同輸入卻得到不一致的烘焙建議、擷取步驟期間推論速度緩慢，以及不安全的建議（例如以過高溫度沖煮）。該公司必須改善重複輸入時輸出的穩定性。該公司也必須改善應用程式效能與應用程式輸出的安全性。更新後的解決方案必須確保相同輸入有 99.5% 的輸出一致性，並達到低於 1 秒的推論延遲。該解決方案還必須透過經過驗證的安全控制來封鎖不安全或產生幻覺的建議。哪一種解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "部署採用 provisioned throughput 的 Amazon Bedrock 以穩定推論延遲。套用具有語意拒絕規則的 Amazon Bedrock guardrails 以封鎖不安全的輸出。使用 Amazon Bedrock Prompt Management 透過核准工作流程來管理 prompt。",
+   "B": "使用 Amazon Bedrock Agents 來管理串接（chaining）。將模型輸入與輸出記錄到 Amazon CloudWatch Logs。使用 Amazon CloudWatch 的記錄來對 prompt 版本執行 A/B 測試。",
+   "C": "將 prompt 結果快取於 Amazon ElastiCache。使用 AWS Lambda 函式預先處理中繼資料並追蹤端對端延遲。使用 AWS X-Ray 來識別並修正效能瓶頸。",
+   "D": "使用 Amazon Kendra 改善烘焙紀錄擷取的準確度。將正規化後的 prompt 中繼資料儲存於 Amazon DynamoDB。使用 AWS Step Functions 來協調多步驟 prompt。"
+  }
  },
  {
   "num": 85,
@@ -1211,7 +1811,14 @@
   "answers": [
    "C"
   ],
-  "explain": "資料駐留同大陸 + 稽核 + 資料分類 → 區域內依地理來源預處理(駐留)+ S3 Object Lock/區域政策 + Macie(S3 資料分類)+ CloudTrail 不可變日誌。cross-Region 分散(A)可能跨大陸;手動追蹤/報告(A、D)易錯;缺分類(B)。"
+  "explain": "資料駐留同大陸 + 稽核 + 資料分類 → 區域內依地理來源預處理(駐留)+ S3 Object Lock/區域政策 + Macie(S3 資料分類)+ CloudTrail 不可變日誌。cross-Region 分散(A)可能跨大陸;手動追蹤/報告(A、D)易錯;缺分類(B)。",
+  "stem_zh": "某公司正在使用 Amazon Bedrock 開發一個 generative AI (GenAI) 應用程式。該應用程式將分析該公司資料中的模式與關聯性。該應用程式每天會在歐洲、北美與亞洲的多個 AWS Regions 處理數百萬筆新資料點，之後再將資料儲存於 Amazon S3。該應用程式必須遵守當地的資料保護與儲存法規。資料的存放地點（data residency）與處理必須發生在同一個洲內。該應用程式也必須維護其決策過程的稽核軌跡，並提供資料分類能力。哪一種解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "在每個 Region 部署該應用程式並搭配當地的 IAM policies。使用 Amazon Bedrock cross-Region inference 來分散工作負載。使用 Amazon CloudWatch 記錄 AI 決策過程與資料處理活動。手動追蹤各 Region 的合規認證。",
+   "B": "使用 AWS Organizations 的 SCP 來管理特定位置的權限。使用 AWS CloudTrail 不可變更（immutable）記錄來稽核決策過程。將自訂模型匯入 Amazon Bedrock 並將該模型部署到每個 Region。",
+   "C": "使用 Amazon S3 Object Lock 並搭配特定 Region 的 S3 bucket 政策。在將資料點傳送至 Amazon Bedrock 之前，先根據地理來源於該 Region 內預先處理資料點。使用 Amazon Macie 來分類資料。使用 AWS CloudTrail 不可變更記錄來稽核決策過程。",
+   "D": "為每個 Region 建立各自獨立的 AWS 帳戶並搭配各自的合規框架。使用 Amazon SageMaker AI 搭配自訂監控來追蹤模型效能與是否符合 data residency 需求。為每個法規管轄區建立手動報表。"
+  }
  },
  {
   "num": 86,
@@ -1225,7 +1832,14 @@
   "answers": [
    "A"
   ],
-  "explain": "偵測幻覺 + 安全 + 即時漂移 + 稽核 + 最少負擔 → Guardrails(安全)+ Model Evaluation(幻覺)+ DynamoDB+TTL(稽核)+ CloudWatch 自訂指標整合儀表板(即時漂移)。SageMaker Model Monitor(D)非 Bedrock + WAF 非內容安全;QuickSight(C)是批次非即時。"
+  "explain": "偵測幻覺 + 安全 + 即時漂移 + 稽核 + 最少負擔 → Guardrails(安全)+ Model Evaluation(幻覺)+ DynamoDB+TTL(稽核)+ CloudWatch 自訂指標整合儀表板(即時漂移)。SageMaker Model Monitor(D)非 Bedrock + WAF 非內容安全;QuickSight(C)是批次非即時。",
+  "stem_zh": "某金融服務公司正在部署一個使用 Amazon Bedrock 的 generative AI (GenAI) 應用程式，以協助客服代表為客戶提供個人化的投資建議。該公司必須實作一個遵循負責任 AI 實務並符合法規要求的全面治理解決方案。該解決方案必須偵測並防止建議中的幻覺。該解決方案必須具備針對客戶互動的安全控制。該解決方案還必須即時監控模型行為漂移（drift），並維護所有 prompt-response 配對的稽核軌跡以供法規審查。該公司必須在 60 天內部署該解決方案。該解決方案必須與該公司現有的合規儀表板整合，並在 200 毫秒內回應客戶。哪一種解決方案能以最少的營運負擔滿足這些需求？",
+  "options_zh": {
+   "A": "設定 Amazon Bedrock guardrails 以套用自訂內容過濾器與毒性偵測。使用 Amazon Bedrock Model Evaluation 來偵測幻覺。將 prompt-response 配對儲存於 Amazon DynamoDB 以擷取稽核軌跡並設定 TTL。將 Amazon CloudWatch 自訂 metrics 與現有的合規儀表板整合。",
+   "B": "部署 Amazon Bedrock 並使用 AWS PrivateLink 安全地存取該應用程式。使用 AWS Lambda 函式實作自訂 prompt 驗證。將 prompt-response 配對儲存於 Amazon S3 bucket 並設定 S3 Lifecycle 政策。建立自訂的 Amazon CloudWatch 儀表板以監控模型效能 metrics。",
+   "C": "使用 Amazon Bedrock Agents 與 Amazon Bedrock Knowledge Bases 來為回應提供依據（ground）。使用 Amazon Bedrock Guardrails 來強制執行內容安全。使用 Amazon OpenSearch Service 來儲存並索引 prompt-response 配對。將 OpenSearch Service 與 Amazon QuickSight 整合以建立合規報表並偵測模型行為漂移。",
+   "D": "使用 Amazon SageMaker Model Monitor 偵測模型行為漂移。使用 AWS WAF 過濾內容。將客戶互動儲存於加密的 Amazon RDS 資料庫。使用 Amazon API Gateway 建立自訂 HTTP API 以與合規儀表板整合。"
+  }
  },
  {
   "num": 87,
@@ -1239,7 +1853,14 @@
   "answers": [
    "B"
   ],
-  "explain": "欄位層級遮蔽 PII + 授權子集 + 跨業務/區域 + 稽核 → Lake Formation LF-Tag 表達式(欄位層級+標籤式授權)+ IAM 角色 + CloudTrail。S3 桶政策(A)/presigned URL(D)是物件層級做不到欄位;直接授權(C)不可擴展+自建。"
+  "explain": "欄位層級遮蔽 PII + 授權子集 + 跨業務/區域 + 稽核 → Lake Formation LF-Tag 表達式(欄位層級+標籤式授權)+ IAM 角色 + CloudTrail。S3 桶政策(A)/presigned URL(D)是物件層級做不到欄位;直接授權(C)不可擴展+自建。",
+  "stem_zh": "某公司使用 AWS Lake Formation 建置一個資料湖，內含跨多個 AWS Regions、多個業務單位的資料庫與資料表。該公司希望透過 Amazon Bedrock 使用一個 foundation model (FM) 來執行詐欺偵測。該 FM 必須從資料湖擷取敏感的財務資料。該資料包含部分客戶個人身分識別資訊（PII）。該公司必須設計一個存取控制解決方案，以防止 PII 出現在正式環境中。該 FM 只能存取已從特定資料欄位中將 PII 遮蔽（redacted）的授權資料子集。該公司必須擷取所有資料存取的稽核軌跡。哪一種解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "為每個業務單位與 Region 的組合在各自獨立的 Amazon S3 bucket 中建立各自的資料集。設定 S3 bucket 政策，根據指派給 FM 訓練執行個體的 IAM roles 來控制存取。使用 S3 存取記錄來追蹤資料存取。",
+   "B": "設定該 FM 使用 IAM roles 進行驗證，並根據 LF-Tag 運算式套用 Lake Formation 權限。將業務單位與 Regions 定義為指派給資料庫與資料表的 LF-Tags。使用 AWS CloudTrail 收集全面的資料存取稽核軌跡。",
+   "C": "在 Lake Formation 中對特定資料庫與資料表使用直接的 IAM principal 授權。建立一個自訂的應用程式層，記錄存取請求並在將資料傳送給 FM 之前進一步過濾敏感欄位。",
+   "D": "設定該 FM 向 AWS STS 請求臨時憑證。透過一個套用業務單位與 Region 過濾條件的 API 所產生的 presigned S3 URL 來存取資料。使用 AWS CloudTrail 收集全面的資料存取稽核軌跡。"
+  }
  },
  {
   "num": 88,
@@ -1253,7 +1874,14 @@
   "answers": [
    "D"
   ],
-  "explain": "語意近但不相關 + 改善相關性 + 最少負擔 → Bedrock Knowledge Bases 內建 reranking configuration(只需啟用)。自建管道 Retrieve+Rerank+InvokeModel(C)負擔較高;SageMaker 自訓(A)最高;Comprehend/Textract/Neptune(B)非 rerank。"
+  "explain": "語意近但不相關 + 改善相關性 + 最少負擔 → Bedrock Knowledge Bases 內建 reranking configuration(只需啟用)。自建管道 Retrieve+Rerank+InvokeModel(C)負擔較高;SageMaker 自訓(A)最高;Comprehend/Textract/Neptune(B)非 rerank。",
+  "stem_zh": "某公司運行一個使用 Amazon Bedrock Knowledge Bases 來執行法規合規查詢的 Retrieval Augmented Generation (RAG) 應用程式。該應用程式使用 RetrieveAndGenerateStream API。該應用程式從一個包含超過 50,000 份法規文件、法律判例與政策更新的 knowledge base 中擷取相關文件。此 RAG 應用程式產生次佳的回應，因為初始擷取常常傳回語意相似但在情境上不相關的文件。這些不佳的回應導致模型幻覺與錯誤的法規指引。該公司需要改善此 RAG 應用程式的效能，使其能傳回更相關的文件。哪一種解決方案能以最少的營運負擔滿足此需求？",
+  "options_zh": {
+   "A": "部署一個 Amazon SageMaker endpoint 來運行一個微調過的排序（ranking）模型。使用 Amazon API Gateway REST API 來路由請求。設定該應用程式透過此 REST API 發出請求以對結果重新排序（rerank）。",
+   "B": "使用 Amazon Comprehend 來分類文件並套用相關性分數。將此 RAG 應用程式的重新排序流程與 Amazon Textract 整合以執行文件分析。使用 Amazon Neptune 執行以圖形（graph）為基礎的相關性運算。",
+   "C": "實作一個擷取管線，使用 Amazon Bedrock Knowledge Bases Retrieve API 來執行初始文件擷取。呼叫 Amazon Bedrock Rerank API 以對結果重新排序。呼叫 InvokeModelWithResponseStream 操作來產生回應。",
+   "D": "透過 Amazon Bedrock Knowledge Bases 內的重新排序設定，使用最新的 Amazon reranker 模型。使用該模型改善文件相關性評分，並根據情境評估重新排列結果順序。"
+  }
  },
  {
   "num": 89,
@@ -1267,7 +1895,14 @@
   "answers": [
    "D"
   ],
-  "explain": "分層過濾(冒犯+隱私+不當請求)+ 維持回應時間 → 並行 parallel + toxicity + prompt safety + PII with redaction(遮蔽才保護隱私)。PII 不遮蔽(A)無效;多階段串接+EventBridge 人工審(C)延遲高;自建 FM 分類(B)成本高。"
+  "explain": "分層過濾(冒犯+隱私+不當請求)+ 維持回應時間 → 並行 parallel + toxicity + prompt safety + PII with redaction(遮蔽才保護隱私)。PII 不遮蔽(A)無效;多階段串接+EventBridge 人工審(C)延遲高;自建 FM 分類(B)成本高。",
+  "stem_zh": "某公司正在開發一個客戶溝通平台，該平台使用由 Amazon Bedrock foundation model (FM) 驅動的 AI 助理。此 AI 助理會摘要客戶訊息並產生初步回應草稿。該公司希望使用 Amazon Comprehend 來實作分層式內容過濾。此分層式內容過濾必須防止分享冒犯性內容、保護客戶隱私，並偵測潛在的不當建議索取行為。不當建議索取行為包括對不道德實務、有害活動或操縱性行為的請求。該解決方案必須維持可接受的整體回應時間，因此所有前置處理過濾器都必須在內容到達 FM 之前完成。哪一種解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "使用搭配非同步 API 呼叫的平行處理。使用毒性偵測來偵測冒犯性內容。使用 prompt 安全分類來偵測不當建議索取行為。使用不含遮蔽（redaction）的個人身分識別資訊（PII）偵測。",
+   "B": "使用自訂分類來建立一個可偵測冒犯性內容與不當建議索取行為的 FM。僅在訊息通過自訂分類器後，才將個人身分識別資訊（PII）偵測作為次要過濾器套用。",
+   "C": "部署一個多階段流程。設定該流程先使用 prompt 安全分類，接著僅對安全的 prompt 執行毒性偵測，最後以串流模式執行個人身分識別資訊（PII）偵測。透過 Amazon EventBridge 將被標記的訊息路由給人工審查。",
+   "D": "使用毒性偵測，並將所有類別的閾值設定為 0.5。對 prompt 安全分類與個人身分識別資訊（PII）偵測（含實體遮蔽）兩者使用平行處理。套用 Amazon CloudWatch 警報來過濾 metrics。"
+  }
  },
  {
   "num": 90,
@@ -1281,7 +1916,14 @@
   "answers": [
    "B"
   ],
-  "explain": "結構化資料(RDS)精確檢索 + 一致準確 + 減幻覺 → text-to-SQL + SQL 驗證 + Step Functions/Lambda 驗證工作流。RAG/向量搜尋(A、C)適合非結構化;B vs D:結構化用「驗證工作流」減幻覺(B),非語意相似度搜尋(D)。"
+  "explain": "結構化資料(RDS)精確檢索 + 一致準確 + 減幻覺 → text-to-SQL + SQL 驗證 + Step Functions/Lambda 驗證工作流。RAG/向量搜尋(A、C)適合非結構化;B vs D:結構化用「驗證工作流」減幻覺(B),非語意相似度搜尋(D)。",
+  "stem_zh": "某軟體即服務（SaaS）公司正在建立一個使用 Amazon SageMaker AI 的推薦模型，以支援一個向客戶推薦航空艙等升級的應用程式。該公司將透過 Amazon Bedrock Custom Model Import 把 SageMaker AI 模型託管於 Amazon Bedrock 上。航空公司將使用此應用程式向客戶發送客製化優惠。該模型必須檢視客戶的旅遊歷史，以協助提出更相關的推薦。該公司將客戶旅遊歷史資料儲存於 Amazon RDS 資料庫中。該公司必須確保此應用程式在多家航空公司與多種客戶群體間提供一致、相關且準確的結果。哪一種解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "使用 Amazon Bedrock Knowledge Bases 實作一個 RAG 架構，以分析客戶旅遊歷史資料，賦予應用程式語意搜尋能力。使用語意搜尋能力擷取相關的訂位模式、偏好與會員忠誠度資訊，以產生個人化的艙等升級推薦。套用 Amazon Bedrock guardrails 以過濾內容。使用 AWS Step Functions 與 AWS Lambda 函式協調驗證工作流程以減少幻覺。",
+   "B": "實作搭配 SQL 驗證的 text-to-SQL 轉換，以從 RDS 資料庫準確擷取相關的訂位模式、偏好與會員忠誠度資訊。使用結果產生個人化的艙等升級推薦。套用 Amazon Bedrock guardrails 以過濾內容。使用 AWS Step Functions 與 AWS Lambda 函式協調驗證工作流程以減少幻覺。",
+   "C": "使用 Amazon OpenSearch Service 實作客戶旅遊歷史 embeddings 的向量搜尋。使用向量搜尋賦予應用程式對訂位模式、偏好與會員忠誠度資訊進行相似度型擷取的能力，以產生個人化的艙等升級推薦。套用 Amazon Bedrock guardrails 以過濾回應。使用信心評分與語意相似度搜尋以減少幻覺。",
+   "D": "實作搭配 SQL 驗證的 text-to-SQL 轉換，以從 RDS 資料庫準確擷取相關的訂位模式、偏好與會員忠誠度資訊。使用結果產生個人化的艙等升級推薦。套用 Amazon Bedrock guardrails 以過濾回應。使用信心評分與語意相似度搜尋以減少幻覺。"
+  }
  },
  {
   "num": 91,
@@ -1295,7 +1937,14 @@
   "answers": [
    "B"
   ],
-  "explain": "不暴露 PII + 資料駐留各區處理 + 部署前評估 → 敏感資訊過濾器 + mask(評估可觀察)/block(生產阻擋)+ 每區部署 guardrail(駐留)。cross-Region(A、D)違反駐留;content/word filters(C、D)非 PII 工具;生產只 detect(C)會暴露。"
+  "explain": "不暴露 PII + 資料駐留各區處理 + 部署前評估 → 敏感資訊過濾器 + mask(評估可觀察)/block(生產阻擋)+ 每區部署 guardrail(駐留)。cross-Region(A、D)違反駐留;content/word filters(C、D)非 PII 工具;生產只 detect(C)會暴露。",
+  "stem_zh": "某公司正在使用 Amazon Bedrock 開發一個客戶支援 AI 助理。此 AI 助理必須回應客戶關於其帳戶的問題。此 AI 助理在回應中不得揭露個人資訊。該公司必須遵守 data residency 政策，確保所有處理都發生在每位客戶所在的同一個 AWS Region 內。該公司希望在向客戶提供此 AI 助理之前，評估此 AI 助理在防止揭露個人資訊方面的有效程度。哪一種解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "設定一個 cross-Region Amazon Bedrock guardrail 以套用敏感資訊過濾器。在開發與測試期間將該 guardrail 設為偵測（detect）模式。在正式部署時切換為封鎖（block）模式。",
+   "B": "設定一個 Amazon Bedrock guardrail 以套用敏感資訊過濾器。在開發與測試期間將該 guardrail 設為遮罩（mask）模式。在正式部署時切換為封鎖（block）模式。在該公司營運的每個 Region 部署一份該 guardrail 的副本。",
+   "C": "設定一個 Amazon Bedrock guardrail 以套用內容與主題過濾器。在開發、測試與正式環境期間將該 guardrail 設為偵測（detect）模式。停用 Amazon Bedrock 模型的呼叫記錄（invocation logging）。",
+   "D": "設定一個 cross-Region Amazon Bedrock guardrail 以套用一組內容與字詞過濾器。在開發與測試期間將該 guardrail 設為偵測（detect）模式。在正式部署時切換為遮罩（mask）模式。"
+  }
  },
  {
   "num": 92,
@@ -1309,7 +1958,14 @@
   "answers": [
    "D"
   ],
-  "explain": "語意相似搜尋 + 中小規模(<100萬)+ 最少負擔 → 託管 Titan Embeddings + Aurora PostgreSQL Serverless + pgvector。OpenSearch(A)是大規模工具+管叢集;自建 SageMaker 嵌入(C)負擔高;Comprehend 主題(B)非語意相似。"
+  "explain": "語意相似搜尋 + 中小規模(<100萬)+ 最少負擔 → 託管 Titan Embeddings + Aurora PostgreSQL Serverless + pgvector。OpenSearch(A)是大規模工具+管叢集;自建 SageMaker 嵌入(C)負擔高;Comprehend 主題(B)非語意相似。",
+  "stem_zh": "某大學最近將一批檔案文件、學術期刊與手稿數位化。該大學將這些數位檔案儲存於 AWS Lake Formation 資料湖中。該大學聘請一位 GenAI 開發人員建立一個解決方案，讓使用者能以文字查詢搜尋這些數位檔案。該解決方案必須傳回與使用者查詢在語意上相似的期刊摘要。使用者必須能夠根據與期刊摘要相關聯的文字與中繼資料來搜尋這個數位化典藏。這些數位化檔案的中繼資料不含關鍵字。該解決方案必須根據摘要文字的相似度，將彼此相似的摘要互相比對。此資料湖包含少於 100 萬個檔案。哪一種解決方案能以最少的營運負擔滿足這些需求？",
+  "options_zh": {
+   "A": "在 Amazon Bedrock 中使用 Amazon Titan Embeddings 為數位化檔案建立向量表示。將 embeddings 儲存於 Amazon OpenSearch Service 的 OpenSearch Neural Plugin 中。",
+   "B": "使用 Amazon Comprehend 從數位化檔案中擷取主題。將主題與檔案中繼資料儲存於 Amazon Aurora PostgreSQL 資料庫。針對 Aurora 資料庫中的資料查詢摘要中繼資料。",
+   "C": "使用 Amazon SageMaker AI 部署一個 sentence-transformer 模型。使用該模型為數位化檔案建立向量表示。將 embeddings 儲存於具有 pgvector 擴充功能的 Amazon Aurora PostgreSQL 資料庫。",
+   "D": "在 Amazon Bedrock 中使用 Amazon Titan Embeddings 為數位化檔案建立向量表示。將 embeddings 儲存於具有 pgvector 擴充功能的 Amazon Aurora PostgreSQL Serverless 資料庫。"
+  }
  },
  {
   "num": 93,
@@ -1325,7 +1981,15 @@
    "C",
    "D"
   ],
-  "explain": "S3 新檔觸發(必經 EventBridge,S3 不能直接觸發 Step Functions,刪 E)→ D;Transcribe→Lambda 建 prompt→Bedrock 結構化(C 明確「建立 prompt」優於 A;直接呼叫 B 較難可靠結構化)。"
+  "explain": "S3 新檔觸發(必經 EventBridge,S3 不能直接觸發 Step Functions,刪 E)→ D;Transcribe→Lambda 建 prompt→Bedrock 結構化(C 明確「建立 prompt」優於 A;直接呼叫 B 較難可靠結構化)。",
+  "stem_zh": "某金融服務公司希望使用 Amazon Bedrock foundation models (FMs) 來分析客服中心的錄音。當通話結束時，客服中心會將錄音以 MP3 檔案形式儲存於 Amazon S3 bucket。該公司需要在新檔案建立後立即以結構化格式為這些錄音產生摘要與情感分析。這些錄音平均大小為 20 MB。哪一組解決方案能滿足這些需求？（選擇兩項。）",
+  "options_zh": {
+   "A": "使用 AWS Step Functions 協調一個工作流程來處理錄音。設定各步驟以呼叫 Amazon Transcribe 將音訊轉換為文字、驗證工作完成，並呼叫一個 AWS Lambda 函式以使用 Amazon Bedrock FMs 處理文字並產生結構化分析輸出。",
+   "B": "使用 AWS Step Functions 協調一個工作流程來處理錄音。設定各步驟以呼叫 Amazon Transcribe 將音訊轉換為文字、驗證工作完成，並直接呼叫 Amazon Bedrock FMs 以 JSON 格式產生摘要與情感分析。",
+   "C": "使用 AWS Step Functions 協調一個工作流程來處理錄音。設定各步驟以呼叫 Amazon Transcribe 將音訊轉換為文字、驗證工作完成，並呼叫一個 AWS Lambda 函式來建立一個 prompt 以呼叫 Amazon Bedrock FMs 產生結構化分析輸出。",
+   "D": "設定來源 S3 bucket 將事件傳送至 Amazon EventBridge。建立一個 EventBridge 規則，在 bucket 中建立物件時呼叫此 Step Functions 工作流程。",
+   "E": "設定來源 S3 bucket 在 bucket 中建立物件時將通知傳送至此 Step Functions 工作流程。"
+  }
  },
  {
   "num": 94,
@@ -1339,7 +2003,14 @@
   "answers": [
    "C"
   ],
-  "explain": "依角色差異化 PII(醫生暴露/工程師遮蔽)+ 只用近 3 年 → S3 Lifecycle(移除過時)+ ApplyGuardrail 依 Cognito 群組在「回應時」動態遮蔽。來源永久遮蔽(A)醫生也看不到;兩個 KB(D)過度設計。"
+  "explain": "依角色差異化 PII(醫生暴露/工程師遮蔽)+ 只用近 3 年 → S3 Lifecycle(移除過時)+ ApplyGuardrail 依 Cognito 群組在「回應時」動態遮蔽。來源永久遮蔽(A)醫生也看不到;兩個 KB(D)過度設計。",
+  "stem_zh": "某醫療器材公司希望將使用該公司器材之醫療程序的報告饋入一個 AI 助理。為保護病患隱私，此 AI 助理只能向外科醫師揭露病患的個人身分識別資訊（PII）。此 AI 助理必須為工程師遮蔽 PII。此 AI 助理只能參考少於 3 年的醫療報告。該公司在每份報告發布後便立即將報告儲存於 Amazon S3 bucket。該公司已經設定好一個 Amazon Bedrock knowledge base。此 AI 助理使用 Amazon Cognito 來驗證使用者。哪一種解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "在 S3 bucket 上啟用 Amazon Macie PII 偵測。使用 S3 觸發器呼叫一個 AWS Lambda 函式，從報告中遮蔽 PII。設定該 Lambda 函式以刪除 bucket 中過期的文件並呼叫 knowledge base 同步。",
+   "B": "當有新報告上傳至 bucket 時，呼叫一個 AWS Lambda 函式以同步 S3 bucket 與 knowledge base。使用第二個 Lambda 函式，在使用者屬於工程師 Cognito 使用者群組時呼叫 Amazon Comprehend 偵測並遮蔽 PII。設定 S3 Lifecycle 設定以從 bucket 移除超過 3 年的報告。",
+   "C": "在 bucket 上設定 S3 Lifecycle 設定以移除超過 3 年的報告。排程一個 AWS Lambda 函式每天在 bucket 與 knowledge base 之間執行同步。當使用者與此 AI 助理互動時，呼叫與該使用者 Cognito 使用者群組相符的 ApplyGuardrail 設定，以在適當情況下從代理的回應中遮蔽 PII。",
+   "D": "建立第二個 knowledge base。在 bucket 上設定 S3 Lifecycle 設定以移除超過 3 年的報告。當有新報告上傳至 bucket 時，呼叫一個 AWS Lambda 函式以將 bucket 與原始 knowledge base 同步。使用 Amazon Comprehend 在將 bucket 與第二個 knowledge base 同步之前偵測並遮蔽 PII。當使用者與此 AI 助理互動時，根據該使用者的 Cognito 使用者群組將模型重新導向至適當的 knowledge base。"
+  }
  },
  {
   "num": 95,
@@ -1353,7 +2024,14 @@
   "answers": [
    "D"
   ],
-  "explain": "統一可觀測性 + 偵測降級 + 警報 → CloudWatch 整合儀表板 + composite alarms with anomaly detection(偵測降級)+ SNS。A 只有固定門檻無 anomaly detection;自動修復(B)超出需求;QuickSight(C)是批次非即時。"
+  "explain": "統一可觀測性 + 偵測降級 + 警報 → CloudWatch 整合儀表板 + composite alarms with anomaly detection(偵測降級)+ SNS。A 只有固定門檻無 anomaly detection;自動修復(B)超出需求;QuickSight(C)是批次非即時。",
+  "stem_zh": "某大型電子商務公司已部署一個 foundation model (FM) 來產生產品描述。該公司的工程團隊使用 Amazon CloudWatch 監控諸如 token 使用量、延遲與錯誤率等技術 metrics。該公司的行銷團隊則在自己的系統中追蹤諸如轉換率與營收影響等業務 metrics。該公司需要一個統一的可觀測性解決方案，將技術效能與業務成果相互關聯。該解決方案必須在操作 metrics 顯示效能劣化時自動向利害關係人發出警示。該解決方案必須在技術與業務 metrics 兩方面提供全面的可見性。哪一種解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "建立包含技術 metrics 與匯入之業務 metrics 的 CloudWatch 儀表板。設定結合技術資料與業務資料的 CloudWatch 複合警報（composite alarms）。使用 Amazon SNS 設定向利害關係人的通知。",
+   "B": "使用 Amazon Managed Grafana 將來自 CloudWatch 的技術 metrics 與來自外部來源的業務 metrics 一起視覺化。設定 Amazon Managed Grafana 警報以呼叫 AWS Lambda 函式。設定這些 Lambda 函式在 metrics 超過預先定義的閾值時自動修正問題。",
+   "C": "使用 CloudWatch metric streams 將 CloudWatch metrics 串流至 Amazon S3。建立 Amazon QuickSight 儀表板以視覺化結合後的技術 metrics 與業務 metrics。設定 Amazon EventBridge 規則，在 metrics 超過預先定義的閾值時向利害關係人發送通知。",
+   "D": "設定整合操作 metrics 與匯入之業務 metrics 的 CloudWatch 自訂儀表板。設定具有異常偵測（anomaly detection）的 CloudWatch 複合警報。使用 Amazon SNS 建立警報動作，在相互關聯的 metrics 顯示效能問題時通知利害關係人。"
+  }
  },
  {
   "num": 96,
@@ -1367,7 +2045,14 @@
   "answers": [
    "C"
   ],
-  "explain": "Bedrock FM 跨歐洲 + 資料保留歐洲 + 私有 + SCP 區域限制 → Geographic cross-Region inference(eu.* 端點保留歐洲)+ Bedrock VPC endpoint(私有)+ 調整 SCP + inference profile。EC2(B)/SageMaker(D)自建負擔高且偏離 Bedrock。"
+  "explain": "Bedrock FM 跨歐洲 + 資料保留歐洲 + 私有 + SCP 區域限制 → Geographic cross-Region inference(eu.* 端點保留歐洲)+ Bedrock VPC endpoint(私有)+ 調整 SCP + inference profile。EC2(B)/SageMaker(D)自建負擔高且偏離 Bedrock。",
+  "stem_zh": "一位 GenAI 開發人員正在評估 Amazon Bedrock foundation models (FMs)，以強化一家位於歐洲的公司的內部業務應用程式。該公司在 AWS Control Tower 中有一個多帳戶登陸區（landing zone）。該公司使用 SCP 僅允許其帳戶使用 eu-north-1 Region 與 eu-west-1 Region。所有客戶資料都必須保留在核准的 AWS Regions 內的私有網路中。該 GenAI 開發人員根據分析與測試選定一個 FM，並將該模型託管於 eu-central-1 Region 與 eu-west-3 Region。該 GenAI 開發人員必須為該公司員工啟用對此 FM 的存取。該 GenAI 開發人員必須確保對此 FM 的請求為私有，且停留在與該 FM 相同的 Regions 內。哪一種解決方案能滿足這些需求？",
+  "options_zh": {
+   "A": "部署一個由位於 eu-north-1 的 VPC 中的私有 Amazon API Gateway REST API 所公開的 AWS Lambda 函式。在 eu-central-1 與 eu-west-3 為所選的 FM 建立 VPC endpoint。擴充現有的 SCP 以允許員工使用此 FM。將此 REST API 與業務應用程式整合。",
+   "B": "在 eu-north-1 的 Amazon EC2 執行個體上部署此 FM。在這些 EC2 執行個體前方部署一個私有 Amazon API Gateway REST API。設定一個 Amazon Bedrock VPC endpoint。將此 REST API 與業務應用程式整合。",
+   "C": "設定此 FM 透過 eu.amazon.* endpoint 使用 cross-Region inference，以確保所有呼叫都停留在歐洲境內。設定一個 Amazon Bedrock VPC endpoint。擴充現有的 SCP，以允許員工在該 FM 可用的、位於歐洲的 Regions 中透過 inference profiles 使用此 FM。使用一個 inference profile 將 Amazon Bedrock 與業務應用程式整合。",
+   "D": "在 eu-north-1 的 Amazon SageMaker AI 中部署此 FM。設定一個 SageMaker AI VPC endpoint。擴充現有的 SCP 以允許員工使用此 SageMaker AI endpoint。將 SageMaker AI 中的此 FM 與業務應用程式整合。"
+  }
  },
  {
   "num": 97,
@@ -1381,6 +2066,13 @@
   "answers": [
    "B"
   ],
-  "explain": "複雜查詢減語意稀釋 + RAG + 高效能 + 最少負擔 → Knowledge Base 內建 query decomposition + RAG + flow。agent 自建分解/擴展(A、D)實作多;SageMaker 自訂模型(C)負擔最高;深度研究(D)較慢可能超 2 秒。"
+  "explain": "複雜查詢減語意稀釋 + RAG + 高效能 + 最少負擔 → Knowledge Base 內建 query decomposition + RAG + flow。agent 自建分解/擴展(A、D)實作多;SageMaker 自訂模型(C)負擔最高;深度研究(D)較慢可能超 2 秒。",
+  "stem_zh": "某醫療保健公司正在開發一個處理醫療查詢的應用程式。該應用程式必須透過減少語意稀釋（semantic dilution）以高準確度回答複雜查詢。該應用程式必須參考醫療文件中特定領域的術語，以減少醫療術語上的歧義。該應用程式必須能夠每分鐘回應 1,000 筆查詢，且回應時間少於 2 秒。哪一種解決方案能以最少的營運負擔滿足這些需求？",
+  "options_zh": {
+   "A": "使用 Amazon API Gateway 將傳入的查詢路由至一個 Amazon Bedrock agent。設定該 agent 使用 Anthropic Claude 模型來分解查詢，並使用 Amazon Titan 模型來擴展查詢。建立一個 Amazon Bedrock knowledge base 來儲存參考的醫療文件。",
+   "B": "設定一個 Amazon Bedrock knowledge base 來儲存參考的醫療文件。在該 knowledge base 中啟用查詢分解（query decomposition）。設定一個使用 foundation model (FM) 與該 knowledge base 的 Amazon Bedrock flow 來支援此應用程式。",
+   "C": "使用 Amazon SageMaker AI 託管用於查詢分解與查詢擴展的自訂 ML 模型。設定 Amazon Bedrock knowledge bases 來儲存參考的醫療文件。將 knowledge base 中的文件加密。",
+   "D": "建立一個 Amazon Bedrock agent 來協調多個 AWS Lambda 函式以分解查詢。建立一個 Amazon Bedrock knowledge base 來儲存參考的醫療文件。使用該 agent 內建的 knowledge base 能力。為該 agent 加入深度研究與推理能力，以減少醫療術語上的歧義。"
+  }
  }
 ]
