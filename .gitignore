@@ -1,0 +1,9 @@
+# Word 暫存鎖檔
+~$*.docx
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
