@@ -9,9 +9,9 @@
    "D": "Create an Amazon Bedrock model evaluation job to compare fairness between the two prompt variants. Enable model invocation logging in Amazon CloudWatch. Set up CloudWatch alarms for InvocationsIntervened metrics with a dimension for each demographic group."
   },
   "answers": [
-   "D"
+   "C"
   ],
-  "explain": "「比較兩 prompt 公平性/偏差 + 最少自訂開發」→ Bedrock model evaluation job(內建評估)+ 依 demographic group 維度設 CloudWatch alarm。SageMaker Clarify(C)是 SageMaker ML 模型工具且需較多整合;自建 Lambda 後處理(A)開發量大。",
+  "explain": "「比較兩 prompt 的公平性/偏差 + 即時監控 + 最少自訂開發」→ Amazon SageMaker Clarify。Clarify 是 AWS 內建的負責任 AI(Responsible AI)工具，專門計算跨 demographic group 的 bias/fairness metrics(內建多種偏差指標)，可把 fairness metrics 發布到 CloudWatch 並設 alarm，群組間差異超過門檻(>15%)即自動告警 — 不必自建後處理邏輯，開發量最少。D(Bedrock model evaluation job)偏一次性批次評估、非持續即時監控，且 InvocationsIntervened 是 Guardrails 的攔截計數指標、本身沒有 per-demographic-group 的公平性維度，機制對不上。A 需自建 Lambda 後處理，開發量最大；B 用 Guardrails 內容過濾衡量公平性也不對題。",
   "stem_zh": "一家零售公司有一個使用 Amazon Bedrock 的生成式 AI (GenAI) 產品推薦應用程式。該應用程式會根據瀏覽記錄與人口統計資料向客戶推薦產品。公司需要在多個人口統計群組之間實作公平性評估，以偵測並衡量兩種 prompt 方法之間在推薦上的偏差。公司希望即時收集並監控公平性 metrics。當公平性 metrics 在不同人口統計群組之間顯示出超過 15% 的差異時，公司必須收到警示。公司必須收到每週報告，比較兩種 prompt 方法的表現。哪一個解決方案能以最少的自訂開發工作量滿足這些需求？",
   "options_zh": {
    "A": "設定一個 Amazon CloudWatch dashboard 來顯示來自 Amazon Bedrock API 呼叫的預設 metrics。根據模型輸出建立自訂 metrics。設定 Amazon EventBridge 規則來叫用 AWS Lambda functions，對模型回應執行後處理分析並發佈自訂的公平性 metrics。",
@@ -57,9 +57,9 @@
    "D": "Change the RetrieveAndGenerate API to the InvokeModelWithResponseStream API. Update the application to use an Amazon API Gateway WebSocket API to support the streaming response."
   },
   "answers": [
-   "D"
+   "A"
   ],
-  "explain": "複雜問題逾時/慢→改串流:InvokeModelWithResponseStream + WebSocket API,降低感知延遲。加大逾時/重試(B)不解決根本;SQS 輪詢(C)非即時串流。",
+  "explain": "既有架構已是 AWS Amplify + AppSync GraphQL，複雜問題逾時/慢 → 用「串流」降低感知延遲、且改動最小 → AWS Amplify AI Kit。AI Kit 在現有 Amplify/AppSync 堆疊上原生支援串流回應:Lambda 接收 Bedrock 串流 chunk → 推送到 AppSync → 前端用 subscription 即時逐字接收，並能優化 client-side 渲染，保留原本的 Knowledge Bases(RetrieveAndGenerate)檢索能力。D 把 RetrieveAndGenerate 換成 InvokeModelWithResponseStream 會失去 knowledge base 檢索，且改用 API Gateway WebSocket 等於重建整個架構，過度改動。加大逾時/重試(B)不解決根本延遲;改走 SQS 佇列輪詢(C)是非同步批次、非即時串流，使用者體驗更差。",
   "stem_zh": "一家公司部署了一個 AI 助理，作為使用 AWS Amplify、AWS AppSync GraphQL API 與 Amazon Bedrock Knowledge Bases 的 React 應用程式。該應用程式使用 GraphQL API 來呼叫 Amazon Bedrock 的 RetrieveAndGenerate API，以進行 knowledge base 互動。公司設定了一個 AWS Lambda resolver，使用 RequestResponse 叫用類型。應用程式使用者回報頻繁的逾時與緩慢的回應時間。使用者回報這些問題在需要較長處理時間的複雜問題上更為頻繁。公司需要一個解決方案來修正這些效能問題並提升使用者體驗。哪一個解決方案能滿足這些需求？",
   "options_zh": {
    "A": "使用 AWS Amplify AI Kit 來實作來自 GraphQL API 的串流回應，並最佳化用戶端的渲染。",
