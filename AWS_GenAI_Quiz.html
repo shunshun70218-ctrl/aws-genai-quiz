@@ -98,6 +98,10 @@
       <input id="instant" type="checkbox" checked style="width:18px;height:18px;">
       作答後立即顯示答案與解析
     </label>
+    <label class="field">
+      <input id="ordered" type="checkbox" style="width:18px;height:18px;">
+      題目依照文件順序顯示（不隨機打亂，依題號排序）
+    </label>
     <div class="footer-actions">
       <button class="btn" onclick="startQuiz()">開始測驗 ▶</button>
     </div>
@@ -152,6 +156,7 @@ function startQuiz(){
   let n = parseInt(document.getElementById('count').value)||97;
   n = Math.max(1, Math.min(97, n));
   instant = document.getElementById('instant').checked;
+  const ordered = document.getElementById('ordered').checked;
   const rawNums = (document.getElementById('customNums').value||'').trim();
   const wanted = [...new Set(rawNums.split(/[^0-9]+/).filter(Boolean).map(Number))];
   if(wanted.length){
@@ -159,9 +164,10 @@ function startQuiz(){
     const missing = wanted.filter(x=>!QUESTIONS.some(q=>q.num===x));
     if(!valid.length){ alert('找不到對應題號，請輸入題庫中存在的題號（1–97）。'); return; }
     if(missing.length){ alert('下列題號不存在，已略過：'+missing.join(', ')); }
-    pool = shuffle(QUESTIONS.filter(q=>valid.includes(q.num)));
+    pool = QUESTIONS.filter(q=>valid.includes(q.num));
+    pool = ordered ? pool.sort((a,b)=>a.num-b.num) : shuffle(pool);
   } else {
-    pool = shuffle(QUESTIONS.slice()).slice(0, n);
+    pool = ordered ? QUESTIONS.slice().sort((a,b)=>a.num-b.num).slice(0, n) : shuffle(QUESTIONS.slice()).slice(0, n);
   }
   idx=0; results=[];
   document.getElementById('start').classList.add('hidden');
@@ -290,7 +296,8 @@ function finish(){
 function redoWrong(){
   const nums = window._wrongNums||[];
   if(!nums.length) return;
-  pool = shuffle(QUESTIONS.filter(q=>nums.includes(q.num)));
+  pool = QUESTIONS.filter(q=>nums.includes(q.num));
+  if(document.getElementById('ordered').checked){ pool.sort((a,b)=>a.num-b.num); } else { shuffle(pool); }
   idx=0; results=[];
   document.getElementById('result').classList.add('hidden');
   document.getElementById('quiz').classList.remove('hidden');
